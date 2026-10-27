@@ -1,0 +1,5 @@
+.hero {
+    color: var(--texto-inverso);
+    background: var(--fondo-inverso);
+    margin-top: 0%;
+}

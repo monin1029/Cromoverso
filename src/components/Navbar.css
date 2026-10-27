@@ -1,0 +1,375 @@
+.navbar {
+    position: relative;
+    z-index: 100;
+    width: 100%;
+    color: var(--texto-principal);
+    background: var(--fondo-superficie);
+    border-bottom: 1px solid var(--borde-sutil);       
+}
+
+.navbar-interior {
+    display: flex;
+    align-items: center;
+    min-height: 64px;
+    gap: 34px;
+    padding: 0 30px;
+}
+
+.navbar-logo,
+.navbar-panel-logo {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.logo-movil {
+    display: none;
+}
+
+.navbar-enlaces {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.navbar-enlaces a {
+    color: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.navbar-enlaces a:hover {
+    opacity: 0.65;
+}
+
+.navbar-acciones {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-left: auto;
+}
+
+.navbar-idiomas {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border: 1.5px solid var(--texto-principal);
+    border-radius: 22px;
+}
+
+.navbar-idiomas button {
+    padding: 5px 9px;
+    border: 0;
+    border-radius: 18px;
+    color: var(--texto-principal);
+    background: transparent;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.navbar-idiomas button.seleccionado {
+    color: var(--fondo-superficie);
+    background: var(--marca-primario);
+}
+
+.navbar-idiomas button.seleccionado:hover {
+    background: var(--marca-primario-hover);
+}
+
+.navbar-boton {
+    min-height: 28px;
+    padding: 6px 13px;
+    border: 1.5px solid var(--texto-principal);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.navbar-ingresar {
+    color: var(--texto-principal);
+    background: var(--fondo-superficie);
+    box-shadow: 0 2px 0 var(--borde-fuerte);
+}
+
+.navbar-crear {
+    color: var(--fondo-superficie);
+    background: var(--marca-primario);
+    box-shadow: 0 2px 0 var(--texto-principal);
+}
+
+.navbar-ingresar:hover {
+    background: var(--marca-primario-suave);
+}
+
+.navbar-crear:hover {
+    background: var(--marca-primario-hover);
+}
+
+.navbar-menu {
+    display: none;
+}
+
+.navbar-panel-movil {
+    display: none;
+}
+
+.navbar-mensaje {
+    padding: 8px 24px;
+    margin: 0;
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding-top: 10px;
+        margin-top: 30px;
+        color: var(--texto-principal);
+        background: var(--fondo-inverso);
+        border-bottom-color: var(--borde-inverso);
+    }
+
+    .navbar-interior {
+        min-height: 64px;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 10px;
+    }
+
+    .logo-escritorio {
+        display: none;
+    }
+
+    .logo-movil {
+        display: block;
+    }
+
+    .navbar-menu {
+        display: inline-flex;
+        width: 36px;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        padding: 8px;
+        border: 1px solid var(--borde-inverso);
+        border-radius: 50%;
+        background: var(--fondo-inverso-2);
+        cursor: pointer;
+    }
+
+    .navbar-menu img {
+        width: 24px;
+        height: 24px;
+        filter: brightness(0) invert(1);
+    }
+
+    .navbar-acciones .navbar-crear,
+    .navbar-acciones .navbar-idiomas {
+        display: none;
+    }
+
+    .navbar-acciones .navbar-ingresar {
+        display: block;
+        color: var(--texto-principal);
+        background: var(--fondo-superficie);
+    }
+
+    .navbar-enlaces {
+        display: none;
+    }
+
+    .navbar-panel-movil {
+        position: fixed;
+        z-index: 300;
+        inset: 0;
+        display: flex;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        flex-direction: column;
+        overflow-y: auto;
+        color: var(--texto-principal);
+        background: var(--fondo-pagina);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-100%);
+        
+    }
+
+    .navbar-panel-movil.is-abierto {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+        transition:
+            transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 180ms ease,
+            visibility 0ms;
+    }
+
+    .navbar-panel-header {
+        display: flex;
+        min-height: 78px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        border-bottom: 3px solid var(--borde-fuerte);
+        background: var(--fondo-superficie);
+    }
+
+    .navbar-panel-logo img {
+        display: block;
+        width: 178px;
+        height: auto;
+    }
+
+    .navbar-panel-logo .logo-movil {
+        display: none;
+    }
+
+    .navbar-panel-logo .logo-escritorio {
+        display: block;
+    }
+
+    .navbar-cerrar {
+        display: inline-flex;
+        width: 38px;
+        height: 38px;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border: 2px solid var(--borde-fuerte);
+        border-radius: 50%;
+        color: var(--texto-principal);
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .navbar-cerrar img {
+        display: block;
+        width: 20px;
+        height: 20px;
+    }
+
+    .navbar-panel-navegacion {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 32px 24px;
+    }
+
+    .navbar-panel-enlace {
+        display: flex;
+        min-height: 64px;
+        align-items: center;
+        gap: 14px;
+        padding: 0 18px;
+        border: 2px solid transparent;
+        border-radius: var(--radio-xl);
+        color: var(--texto-principal);
+        text-decoration: none;
+    }
+
+    .navbar-panel-enlace.activo {        
+        border-color: var(--borde-fuerte);
+        background: var(--marca-primario-suave);
+    }    
+    
+    .navbar-panel-texto {
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .navbar-estas-aqui {
+        padding: 6px 9px;
+        margin-left: auto;
+        border-radius: var(--radio-pildora);
+        color: var(--texto-inverso);
+        background: var(--texto-principal);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+
+    .navbar-flecha {
+        display: inline-flex;
+        width: 24px;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+    }
+
+    .navbar-panel-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        padding: 22px 24px ;  
+        border-top: 2px solid var(--borde-fuerte);     
+        background: var(--fondo-superficie);   
+    }
+
+    .navbar-panel-idioma {
+        display: flex;
+        min-height: 38px;
+        align-items: center;
+        justify-content: space-around;
+        font-size: 14px;
+        font-weight: 600;  
+        margin-bottom: 20px;                      
+    }
+
+    .navbar-panel-idioma .navbar-idiomas {
+        gap: 3px;
+        padding: 3px;
+        border-color: var(--borde-fuerte);
+        background: var(--fondo-superficie);        
+    }
+
+    .navbar-panel-idioma .navbar-idiomas button {
+        min-width: 38px;
+        min-height: 30px;
+        border-radius: var(--radio-pildora);
+        font-size: 11px;        
+    }
+
+    .navbar-panel-botones {        
+        width: 100%;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;                
+    }
+
+    .navbar-panel-botones .navbar-boton {
+        min-height: 48px;
+        padding: 10px 12px;
+        border-radius: var(--radio-pildora);
+        font-size: 13px;
+    }
+
+    .navbar-panel-botones .navbar-ingresar {
+        box-shadow: var(--sombra-pop);
+        border: 1px solid var(--borde-fuerte);        
+    }
+
+    .navbar-panel-botones .navbar-crear {
+        box-shadow: var(--sombra-pop);
+        border: 1px solid var(--marca-primario);        
+    }
+}
+
+/* @media (prefers-reduced-motion: reduce) {
+    .navbar-panel-movil,
+    .navbar-panel-movil.is-abierto {
+        transition: none;
+    }
+} */
