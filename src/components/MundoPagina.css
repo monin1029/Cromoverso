@@ -154,6 +154,20 @@
     font-size: 10px;
 }
 
+.carta__rareza {
+    position: absolute;
+    top: var(--espacio-3);
+    right: var(--espacio-3);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 22px;
+    background: var(--fondo-superficie);
+    border: 1px solid var(--borde-fuerte);
+    border-radius: 6px;
+}
+
 .carta-numero {
     left: var(--espacio-3);
 }
@@ -175,6 +189,114 @@
 .carta-holo .carta-arte {
     background: linear-gradient(135deg, var(--base), #f0a8ff 50%, #8fd3ff);
 }
+
+.mundo-lateral {
+    display: grid;
+    gap: var(--espacio-5);
+    align-self: start;
+}
+
+.mundo-principal {
+    min-width: 0;
+}
+
+.mundo-barra {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--espacio-4);
+}
+
+.orden {
+    padding: var(--espacio-2) var(--espacio-4);
+    background: var(--fondo-superficie);
+    border: var(--borde-grosor) solid var(--borde-fuerte);
+    border-radius: var(--radio-pildora);
+    color: var(--texto-principal);
+    font: 700 12px var(--fuente-rubik);
+}
+
+.filtro {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--espacio-2);
+}
+
+.filtro-opcion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: var(--espacio-2);
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    border: 1px solid transparent;
+    border-radius: var(--radio-m);
+    color: var(--texto-principal);
+    font: 12px var(--fuente-rubik);
+}
+
+.filtro-opcion[aria-pressed="true"] {
+    background: var(--marca-primario-suave);
+    border-color: var(--marca-primario);
+}
+
+.filtro-cuenta {
+    color: var(--texto-secundario);
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--espacio-1);
+    padding: 2px var(--espacio-3);
+    border: 1px solid var(--r);
+    border-radius: var(--radio-pildora);
+    background: color-mix(in srgb, var(--r) 14%, white);
+    font: 700 10px var(--fuente-rubik);
+    text-transform: uppercase;
+}
+
+.vacio {
+    padding: var(--espacio-7);
+    text-align: center;
+    background: var(--marca-primario-suave);
+    border: var(--borde-grosor) solid var(--borde-fuerte);
+    border-radius: var(--radio-xl);
+}
+
+.icono-rareza {
+    display: block;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color);
+    -webkit-mask: var(--icono) center / contain no-repeat;
+    mask: var(--icono) center / contain no-repeat;
+}
+
+.chip .icono-rareza {
+    width: 12px;
+    height: 12px;
+}
+
+.icono-rareza--legendaria {
+    --color: var(--rareza-legendaria);
+}
+
+.icono-rareza--epica {
+    --color: var(--rareza-epica);
+}
+
+.icono-rareza--rara {
+    --color: var(--rareza-rara);
+}
+
+.icono-rareza--comun {
+    --color: var(--rareza-comun);
+}
+
 
 @media (max-width: 768px) {
 

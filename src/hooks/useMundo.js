@@ -44,3 +44,40 @@ export function useMundo(id) {
 
   return { ...estado, recargar: () => setIntento((n) => n + 1) };
 }
+
+export function useCromosFiltrados(id, rareza, tipo) {
+  const [estado, setEstado] = useState({
+    cromos: null,
+    cargando: false,
+    error: null,
+  });
+
+  useEffect(() => {
+    if (!rareza && !tipo) {
+      setEstado({ cromos: null, cargando: false, error: null });
+      return;
+    }
+    const ctrl = new AbortController();
+    const q = new URLSearchParams({ mundo: id, porPagina: 100 });
+    if (rareza) q.set("rareza", rareza);
+    if (tipo) q.set("tipo", tipo);
+
+    setEstado({ cromos: null, cargando: true, error: null });
+    pedir(`/cromos?${q}`, ctrl.signal)
+      .then(({ datos }) =>
+        setEstado({ cromos: datos, cargando: false, error: null }),
+      )
+      .catch((falla) => {
+        if (falla?.name === "AbortError") return;
+        setEstado({
+          cromos: null,
+          cargando: false,
+          error: { codigo: falla?.codigo ?? "conexion" },
+        });
+      });
+
+    return () => ctrl.abort();
+  }, [id, rareza, tipo]);
+
+  return estado;
+}
