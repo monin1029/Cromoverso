@@ -10,8 +10,9 @@ import "./Navbar.css";
 
 const DESTINOS = {
     inicio: "#inicio",
-    mundos: "#mundos"
+    mundos: "#mundos",    
 };
+
 
 export default function Navbar({
     textos,
@@ -20,9 +21,7 @@ export default function Navbar({
     recargar,
     idioma,
     cambiarIdioma,
-    activo,    
-    textoGrande, 
-    alternarTexto
+    activo    
 }) {
     const [abierto, setAbierto] = useState(false);    
     const botonMenu = useRef(null);
@@ -34,8 +33,8 @@ export default function Navbar({
     const cerrar = textos?.menuMovil?.cerrar ?? (ingles ? "Close menu" : "Cerrar menú");
     const enlaces = Object.entries(nav?.enlaces ?? {
         inicio: ingles ? "Home" : "Inicio",
-        mundos: ingles ? "Worlds" : "Mundos"
-    }).filter(([clave]) => DESTINOS[clave]);
+        mundos: ingles ? "Worlds" : "Mundos"        
+    }).filter(([clave]) => DESTINOS[clave]);    
 
     useEffect(() => {
         if (abierto) {
@@ -119,19 +118,19 @@ export default function Navbar({
                         </button>
                     </div>
 
-                    <button
-                    className="navbar-boton navbar-ingresar"
-                    type="button"
+                    <a
+                    className="navbar-boton navbar-ingresar"                    
+                    href="#ingresar"
                     >
-                        {ingles ? "Log in" : "Ingresar"}
-                    </button>
+                        { nav?.botones?.ingresar}                        
+                    </a>
 
-                    <button
+                    <a
                     className="navbar-boton navbar-crear"
-                    type="button"
+                    href="#registro"                   
                     >
-                        {ingles ? "Create account" : "Crear cuenta"}
-                    </button>
+                        {nav?.botones?.crearCuenta}
+                    </a>
                 </div>
 
                 {/* Botón del menú móvil */}

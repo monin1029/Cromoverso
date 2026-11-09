@@ -1,5 +1,123 @@
 .hero {
     color: var(--texto-inverso);
-    background: var(--fondo-inverso);
-    margin-top: 0%;
+    background: var(--fondo-inverso) url("../assests/bg/estrella.svg") right center / auto 100% no-repeat;
+    min-height: 558px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: var(--espacio-8);
+}
+
+.hero-cartas {
+    width: 100%;
+    max-width: 560px;
+    justify-self: end;
+}
+
+.hero-texto h1 {
+    margin: 0 0 var(--espacio-5);
+}
+
+.hero-acciones {
+    display: flex;
+    gap: var(--espacio-4);
+    flex-wrap: wrap;
+}
+
+.boton {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--espacio-3) var(--espacio-5);
+    border: var(--borde-grosor) solid var(--borde-fuerte);
+    border-radius: var(--radio-pildora);
+    box-shadow: var(--sombra-pop-pequena);
+    color: var(--texto-principal);
+    font: 700 16px/22px var(--fuente-rubik);
+    text-decoration: none;
+}
+
+.boton-acento {
+    background: var(--marca-acento);
+}
+
+.boton-claro {
+    background: var(--fondo-superficie);
+}
+
+.hero-nota {
+    margin-top: var(--espacio-5);
+    color: var(--texto-inverso-suave);
+    font-size: 14px;
+}
+
+.hero-nota-movil {
+    display: none;
+}
+
+.hero-figura {
+    margin: 0;
+    justify-self: end;
+    max-width: 560px;
+}
+
+.hero-figura img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.hero-destellos {
+    border: var(--marca-acento);
+}
+
+@media (max-width: 768px) {
+    .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 32px 16px;
+        background-size: auto 115%;        
+        background-position: 5% top;        
+    }
+
+    .hero-figura {
+        display: none;
+    }    
+
+    .hero-texto h1 {
+        margin: 0 0 20px;
+        font-size: clamp(2.25rem, 11.5vw, 3rem);
+        line-height: 1.1;
+    }
+
+    .hero-texto h1 br {
+        display: none;
+    }    
+
+    .hero-nota-escritorio {
+        display: none;
+    }
+
+    .hero-nota-movil {
+        display: block;
+        margin: 0 0 24px;
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .hero-acciones {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .hero-acciones .boton {
+        width: 100%;
+        min-height: 54px;
+        justify-content: center;
+        font-size: 16px;
+    }
+
+    .boton img {
+        display: none;
+    }
+
 }

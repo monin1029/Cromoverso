@@ -25,11 +25,11 @@ function validarTextos(datos) {
     nav?.botones?.sobresDisponibles?.uno,
     nav?.botones?.sobresDisponibles?.otro,
 
-    // pag?.inicio?.hero?.titulo,
-    // pag?.inicio?.hero?.subitulo,
-
-    // pag?.inicio?.hero?.botones?.crearCuentaGratis,
-    // pag?.inicio?.hero?.botones?.explorarMundos
+    pag?.inicio?.seo?.titulo,
+    pag?.inicio?.hero?.titulo,
+    pag?.inicio?.hero?.subtitulo,
+    pag?.inicio?.hero?.botones?.crearCuentaGratis,
+    pag?.inicio?.hero?.botones?.explorarMundos,
   ];
 
   if (

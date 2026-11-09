@@ -125,13 +125,15 @@
     font-size: 13px;
 }
 
+a{
+    text-decoration: none;
+}
 @media (max-width: 768px) {
     .navbar {
-        padding-top: 10px;
-        margin-top: 30px;
+        padding-top: 10px;        
         color: var(--texto-principal);
         background: var(--fondo-inverso);
-        border-bottom-color: var(--borde-inverso);
+        border-bottom-color: var(--borde-inverso);        
     }
 
     .navbar-interior {
