@@ -120,19 +120,38 @@ export default function MundoPagina({ id, textos }) {
   return (
     <>
       <header className="mundo-cabecera" style={{ "--c": mundo.color }}>
-        <nav>
-          <a href="#inicio">{t?.migas?.inicio}</a>
-          <span aria-hidden="true"> › </span>
-          <span aria-current="page">{mundo.nombre}</span>
-        </nav>
-        <h1>{mundo.nombre}</h1>
-        <p>
-          {interpolar(t?.encabezado?.rango, {
-            numero: numeroMundo,
-            desde: pad(mundo.numeros.desde),
-            hasta: pad(mundo.numeros.hasta),
-          })}
-        </p>
+        <a
+          className="mundo-cabecera-volver"
+          href="#mundos"
+          aria-label={t?.migas?.inicio}
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path
+              d="M15 5l-7 7 7 7"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
+        <div>
+          <nav>
+            <a href="#inicio">{t?.migas?.inicio}</a>
+            <span aria-hidden="true"> › </span>
+            <span aria-current="page">{mundo.nombre}</span>
+          </nav>
+          <h1>{mundo.nombre}</h1>
+          <p className="mundo-cabecera-rango">
+            {interpolar(t?.encabezado?.rango, {
+              numero: numeroMundo,
+              desde: pad(mundo.numeros.desde),
+              hasta: pad(mundo.numeros.hasta),
+            })}
+          </p>
+          <p className="mundo-cabecera-tema">{mundo.tema}</p>
+        </div>
       </header>
 
       <div className="mundo-cuerpo">
@@ -152,7 +171,8 @@ export default function MundoPagina({ id, textos }) {
                     style={{ "--r": r.color }}
                   >
                     <span className="chip">
-                      <IconoRareza id={r.id} />{r.nombre}
+                      <IconoRareza id={r.id} />
+                      {r.nombre}
                     </span>
                     <span className="filtro-cuenta">
                       {cuenta(t, mundo.porRareza[r.id] ?? 0)}
@@ -186,6 +206,39 @@ export default function MundoPagina({ id, textos }) {
         </aside>
 
         <div className="mundo-principal">
+          <div className="filtros-movil">
+            <select
+              aria-label={t?.filtros?.rareza?.titulo}
+              value={filtros.rareza ?? ""}
+              onChange={(ev) =>
+                aplicar({ ...filtros, rareza: ev.target.value || null })
+              }
+            >
+              <option value="">{t?.filtros?.rareza?.todas}</option>
+              {rarezasOrdenadas.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {interpolar(t?.filtros?.rareza?.valor, { rareza: r.nombre })}
+                </option>
+              ))}
+            </select>
+
+            <select
+              aria-label={t?.filtros?.tipo?.titulo}
+              value={filtros.tipo ?? ""}
+              onChange={(ev) =>
+                aplicar({ ...filtros, tipo: ev.target.value || null })
+              }
+            >
+              <option value="">{t?.filtros?.tipo?.todos}</option>
+              {TIPOS.map((tp) => (
+                <option key={tp} value={tp}>
+                  {interpolar(t?.filtros?.tipo?.valor, {
+                    tipo: t?.filtros?.tipo?.opciones?.[tp],
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="mundo-barra">
             <select
               className="orden"

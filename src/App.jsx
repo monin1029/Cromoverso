@@ -52,7 +52,8 @@ function App() {
       ? datos.textos?.navbar.botones.favoritos
       : datos.textos?.navbar.enlaces[activo];
 
-  //Va a sincronizar el estado del componente con el hash de la URL
+  //Va a sincronizar el estado del componente con el hash de la URL  
+
   useEffect(() => {
     function actualizar() {
       setActivo(leerSeccion());    
@@ -63,7 +64,7 @@ function App() {
 
   useEffect(() => {
     document.documentElement.lang;
-  }, [idioma]);
+  }, [idioma]);  
 
   useEffect(() => {
     document.documentElement.style.fontSize = textoGrande ? "112%" : "";
@@ -82,13 +83,17 @@ function App() {
     setConsentimiento(valor);
   }
 
-  // Nuevo useEffect: sube al inicio en un mundo y baja a la sección en el resto
   useEffect(() => {
     if (activo.startsWith("mundos/")) window.scrollTo(0, 0);
     else document.getElementById(activo)?.scrollIntoView();
   }, [activo]);
+  
 
   const idMundo = activo.startsWith("mundos/") ? activo.split("/")[1] : null;
+
+  useEffect(() => {
+    document.body.dataset.vista = idMundo ? "mundo" : "inicio";
+  }, [idMundo]);
 
   return (
     <>

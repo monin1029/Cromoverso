@@ -66,7 +66,9 @@
     }
 
     .pie-columnas {
-        flex-wrap: wrap;
-        gap: var(--espacio-5) var(--espacio-6);
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        justify-content: space-between;
+        gap: var(--espacio-4);
     }
 }
