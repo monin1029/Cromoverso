@@ -4,5 +4,49 @@
 
 body{
     margin: 0;
-    font-family: var(--fuente-rubik);
+    font-family: var(--fuente-rubik);    
 }
+
+/* Tamaño del texto (escala lo que esté en rem/em) */
+:root[data-tamano="grande"] {
+    zoom: 1.125;
+}
+
+:root[data-tamano="muyGrande"] {
+    zoom: 1.25;
+}
+
+/* Alto contraste */
+:root[data-contraste="alto"] {
+    --texto-secundario: var(--texto-principal);
+    --texto-inverso-suave: var(--texto-inverso);
+    --borde-grosor: 3px;
+}
+
+/* Reducir movimiento */
+:root[data-movimiento="reducido"] *,
+:root[data-movimiento="reducido"] *::before,
+:root[data-movimiento="reducido"] *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}
+
+/* Subrayar enlaces */
+:root[data-enlaces="subrayados"] a:not(.boton) {
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
+}
+
+/* Fuente para lectura fácil: más espacio y sin mayúsculas fijas */
+:root[data-fuente="facil"] * {
+    font-family: Verdana, Tahoma, sans-serif !important;
+    letter-spacing: .05em !important;
+    word-spacing: .12em !important;
+    text-transform: none !important;
+}
+
+:root[data-fuente="facil"] body {
+    line-height: 1.6;
+}
+

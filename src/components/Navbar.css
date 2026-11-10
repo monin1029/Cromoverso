@@ -51,6 +51,20 @@
     margin-left: auto;
 }
 
+.navbar-boton-icono {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--fondo-superficie);
+    color: var(--texto-principal);
+    border: var(--borde-grosor) solid;
+    border-radius: 50%;    
+    cursor: pointer;
+}
+
+
 .navbar-idiomas {
     display: flex;
     align-items: center;
@@ -366,6 +380,10 @@ a{
     .navbar-panel-botones .navbar-crear {
         box-shadow: var(--sombra-pop);
         border: 1px solid var(--marca-primario);        
+    }       
+    
+    .navbar-accesibilidad {
+        display: none;
     }
 }
 

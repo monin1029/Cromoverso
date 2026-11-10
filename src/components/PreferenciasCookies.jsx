@@ -17,7 +17,7 @@ export default function Cookies({ textos, consentimiento, onDecidir }) {
         </div>
         <div className="cookies-acciones">
             <button type="button" className="boton boton-claro" onClick={() => onDecidir("rechazado")}>
-            {c.botones?.rechazar}
+            {c.botones.rechazar}
             </button>
             <button type="button" className="boton boton-primario" onClick={() => onDecidir("aceptado")}>
             {c.botones.aceptar}

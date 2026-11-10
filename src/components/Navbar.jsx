@@ -6,6 +6,7 @@ import Cerrar from "../assests/iconos/cerrar.svg";
 import Inicio from "../assests/iconos/inicio.svg";
 import Flecha from "../assests/iconos/chevronder.svg";
 import Mundo from "../assests/iconos/mundo.svg";
+import Accesibilidad from "../assests/iconos/accesibilidad.svg";
 import "./Navbar.css";
 
 const DESTINOS = {
@@ -15,245 +16,296 @@ const DESTINOS = {
 
 
 export default function Navbar({
-    textos,
-    cargando,
-    error,
-    recargar,
-    idioma,
-    cambiarIdioma,
-    activo    
+  textos,
+  cargando,
+  error,
+  recargar,
+  idioma,
+  cambiarIdioma,
+  activo,
+  abrirAccesibilidad,
 }) {
-    const [abierto, setAbierto] = useState(false);    
-    const botonMenu = useRef(null);
-    const botonCerrar = useRef(null);
-    const menuEstabaAbierto = useRef(false);
-    const nav = textos?.navbar;
-    const ingles = idioma === "en";
-    const abrir = textos?.menuMovil?.abrir ?? (ingles ? "Open menu" : "Abrir menú");
-    const cerrar = textos?.menuMovil?.cerrar ?? (ingles ? "Close menu" : "Cerrar menú");
-    const enlaces = Object.entries(nav?.enlaces ?? {
-        inicio: ingles ? "Home" : "Inicio",
-        mundos: ingles ? "Worlds" : "Mundos"        
-    }).filter(([clave]) => DESTINOS[clave]);    
+  const [abierto, setAbierto] = useState(false);
+  const botonMenu = useRef(null);
+  const botonCerrar = useRef(null);
+  const menuEstabaAbierto = useRef(false);
+  const nav = textos?.navbar;
+  const ingles = idioma === "en";
+  const abrir =
+    textos?.menuMovil?.abrir ?? (ingles ? "Open menu" : "Abrir menú");
+  const cerrar =
+    textos?.menuMovil?.cerrar ?? (ingles ? "Close menu" : "Cerrar menú");
+  const enlaces = Object.entries(
+    nav?.enlaces ?? {
+      inicio: ingles ? "Home" : "Inicio",
+      mundos: ingles ? "Worlds" : "Mundos",
+    },
+  ).filter(([clave]) => DESTINOS[clave]);
 
-    useEffect(() => {
-        if (abierto) {
-            botonCerrar.current?.focus();
-        } else if (menuEstabaAbierto.current) {
-            botonMenu.current?.focus();
-        }
-        menuEstabaAbierto.current = abierto;
-    }, [abierto]);
+  useEffect(() => {
+    if (abierto) {
+      botonCerrar.current?.focus();
+    } else if (menuEstabaAbierto.current) {
+      botonMenu.current?.focus();
+    }
+    menuEstabaAbierto.current = abierto;
+  }, [abierto]);
 
-    useEffect(() => {
-        function cerrarConEscape(evento) {
-            if (evento.key === "Escape" && abierto) {
-                setAbierto(false);
-                botonMenu.current?.focus();
-            }
-        }
+  useEffect(() => {
+    function cerrarConEscape(evento) {
+      if (evento.key === "Escape" && abierto) {
+        setAbierto(false);
+        botonMenu.current?.focus();
+      }
+    }
 
-        document.addEventListener("keydown", cerrarConEscape);
-        return () => document.removeEventListener("keydown", cerrarConEscape);
-    }, [abierto]);
+    document.addEventListener("keydown", cerrarConEscape);
+    return () => document.removeEventListener("keydown", cerrarConEscape);
+  }, [abierto]);
 
-    useEffect(() => {
-        if (!abierto) return undefined;
+  useEffect(() => {
+    if (!abierto) return undefined;
 
-        const overflowAnterior = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
-        return () => {
-            document.body.style.overflow = overflowAnterior;
-        };
-    }, [abierto]);
+    const overflowAnterior = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflowAnterior;
+    };
+  }, [abierto]);
 
-    return (
-        <header className="navbar">
-            <nav
-            className="navbar-interior"
-            aria-label={nav?.aria.menu ?? "Navegación principal"}
+  return (
+    <header className="navbar">
+      <nav
+        className="navbar-interior"
+        aria-label={nav?.aria.menu ?? "Navegación principal"}
+      >
+        <a
+          className="navbar-logo"
+          href="#inicio"
+          aria-label={nav?.logo.aria ?? "Inicio"}
+          onClick={() => setAbierto(false)}
+        >
+          <img src={logoNormal} className="logo-escritorio" alt="" />
+          <img src={logoInverso} className="logo-movil" alt="" />
+        </a>
+
+        <div className={`navbar-enlaces ${abierto ? "is-abierto" : ""}`}>
+          {enlaces.map(([clave, texto]) => (
+            <a
+              key={clave}
+              href={DESTINOS[clave]}
+              aria-current={activo === clave ? "page" : undefined}
+              onClick={() => setAbierto(false)}
             >
-                <a
-                className="navbar-logo"
-                href="#inicio"
-                aria-label={nav?.logo.aria ?? "Inicio"}
-                onClick={() => setAbierto(false)}
-                >
-                    <img src={logoNormal} className="logo-escritorio" alt="" />
-                    <img src={logoInverso} className="logo-movil" alt="" />
-                </a>
+              {texto}
+            </a>
+          ))}
+        </div>
 
-                <div className={`navbar-enlaces ${abierto ? "is-abierto" : ""}`}>
-                {enlaces.map(([clave, texto]) => (
-                    <a
-                    key={clave}
-                    href={DESTINOS[clave]}
-                    aria-current={activo === clave ? "page" : undefined}
-                    onClick={() => setAbierto(false)}
-                    >
-                    {texto}
-                    </a>
-                ))}
-                </div>
-
-                {/* Controles */}
-                <div className={`navbar-acciones ${abierto ? "is-abierto" : ""}`}>
-                    <div className="navbar-idiomas" aria-label="Idioma">
-                        <button
-                        type="button"
-                        className={idioma === "es" ? "seleccionado" : ""}
-                        aria-pressed={idioma === "es"}
-                        onClick={() => cambiarIdioma("es")}
-                        >
-                        ES
-                        </button>
-
-                        <button
-                        type="button"
-                        className={idioma === "en" ? "seleccionado" : ""}
-                        aria-pressed={idioma === "en"}
-                        onClick={() => cambiarIdioma("en")}
-                        >
-                        EN
-                        </button>
-                    </div>
-
-                    <a
-                    className="navbar-boton navbar-ingresar"                    
-                    href="#ingresar"
-                    >
-                        { nav?.botones?.ingresar}                        
-                    </a>
-
-                    <a
-                    className="navbar-boton navbar-crear"
-                    href="#registro"                   
-                    >
-                        {nav?.botones?.crearCuenta}
-                    </a>
-                </div>
-
-                {/* Botón del menú móvil */}
-                <button
-                ref={botonMenu}
-                type="button"                
-                className="navbar-menu"
-                aria-label={abierto ? cerrar : abrir}
-                aria-expanded={abierto}
-                aria-controls="navbar-menu-movil"
-                onClick={() => setAbierto((valor) => !valor)}                
-                >
-                    <img src={Menu} alt="" />
-                </button>
-            </nav>
-
-            <section
-                id="navbar-menu-movil"
-                className={`navbar-panel-movil ${abierto ? "is-abierto" : ""}`}
-                role="dialog"
-                aria-label={nav?.aria.menu ?? (ingles ? "Main navigation" : "Navegación principal")}
-                aria-hidden={!abierto}
-                aria-modal={abierto ? "true" : undefined}
-                inert={!abierto}
+        {/* Controles */}
+        <div className={`navbar-acciones ${abierto ? "is-abierto" : ""}`}>
+          <button
+            type="button"
+            className="navbar-boton-icono navbar-accesibilidad"
+            aria-label={nav?.aria?.accesibilidad}
+            aria-haspopup="dialog"
+            onClick={abrirAccesibilidad}
+          >
+            <img src={Accesibilidad} alt="" />
+          </button>
+          <div className="navbar-idiomas" aria-label="Idioma">
+            <button
+              type="button"
+              className={idioma === "es" ? "seleccionado" : ""}
+              aria-pressed={idioma === "es"}
+              onClick={() => cambiarIdioma("es")}
             >
-                <div className="navbar-panel-header">
-                    <a className="navbar-panel-logo" href="#inicio" onClick={() => setAbierto(false)} aria-label={nav?.logo.aria ?? "Inicio"}>
-                        <img src={logoNormal} className="logo-escritorio" alt="" />
-                        <img src={logoInverso} className="logo-movil" alt="" />                     
-                    </a>
-                    <button
-                        ref={botonCerrar}
-                        className="navbar-cerrar"
-                        type="button"
-                        aria-label={cerrar}
-                        onClick={() => setAbierto(false)}
-                        tabIndex={abierto ? 0 : -1}
-                    >
-                        <img src={Cerrar} alt="" />
-                    </button>
-                </div>
+              ES
+            </button>
 
-                <nav className="navbar-panel-navegacion" aria-label={nav?.aria.menu ?? (ingles ? "Main navigation" : "Navegación principal")}>
-                    {enlaces.map(([clave, texto]) => (
-                        <a
-                            key={clave}
-                            href={DESTINOS[clave]}
-                            className={`navbar-panel-enlace ${activo === clave ? "activo" : ""}`}
-                            aria-current={activo === clave ? "page" : undefined}
-                            onClick={() => setAbierto(false)}
-                        >
-                            {clave === "inicio" ? (
-                                <img src={Inicio} alt="" />
-                            ) : (
-                                <img src={Mundo} alt="" />
-                            )}
-                            <span className="navbar-panel-texto">{texto}</span>
-                            {activo === clave ? (
-                                <span className="navbar-estas-aqui">{ingles ? "YOU ARE HERE" : "ESTÁS AQUÍ"}</span>
-                            ) : (
-                                <span className="navbar-flecha" aria-hidden="true">
-                                    <img src={Flecha} alt="" />
-                                </span>
-                            )}
-                        </a>
-                    ))}
-                </nav>
+            <button
+              type="button"
+              className={idioma === "en" ? "seleccionado" : ""}
+              aria-pressed={idioma === "en"}
+              onClick={() => cambiarIdioma("en")}
+            >
+              EN
+            </button>
+          </div>
 
-                <div className="navbar-panel-idioma">
-                    <span>{ingles ? "Language" : "Idioma"}</span>
-                    <div className="navbar-idiomas" role="group" aria-label={ingles ? "Language" : "Idioma"}>
-                        <button
-                            type="button"
-                            className={idioma === "es" ? "seleccionado" : ""}
-                            aria-pressed={idioma === "es"}
-                            onClick={() => cambiarIdioma("es")}
-                        >
-                            ES
-                        </button>
-                        <button
-                            type="button"
-                            className={idioma === "en" ? "seleccionado" : ""}
-                            aria-pressed={idioma === "en"}
-                            onClick={() => cambiarIdioma("en")}
-                        >
-                            EN
-                        </button>
-                    </div>
-                </div>
+          <a className="navbar-boton navbar-ingresar" href="#ingresar">
+            {nav?.botones?.ingresar}
+          </a>
 
-                <footer className="navbar-panel-footer">
-                    
-                    <div className="navbar-panel-botones">
-                        <button className="navbar-boton navbar-ingresar" type="button" onClick={() => setAbierto(false)}>
-                            {nav?.botones?.ingresar ?? (ingles ? "Log in" : "Ingresar")}
-                        </button>
-                        <button className="navbar-boton navbar-crear" type="button" onClick={() => setAbierto(false)}>
-                            {nav?.botones?.crearCuenta ?? (ingles ? "Create account" : "Crear cuenta")}
-                        </button>
-                    </div>
-                </footer>
-            </section>
+          <a className="navbar-boton navbar-crear" href="#registro">
+            {nav?.botones?.crearCuenta}
+          </a>
+        </div>
 
-            {/* Estados de carga y error de la API */}
-            {cargando && (
-                <p className="navbar-mensaje" role="status">
-                {ingles ? "Loading..." : "Cargando..."}
-                </p>
-            )}
+        {/* Botón del menú móvil */}
+        <button
+          ref={botonMenu}
+          type="button"
+          className="navbar-menu"
+          aria-label={abierto ? cerrar : abrir}
+          aria-expanded={abierto}
+          aria-controls="navbar-menu-movil"
+          onClick={() => setAbierto((valor) => !valor)}
+        >
+          <img src={Menu} alt="" />
+        </button>
+      </nav>
 
-            {error && (
-                <div className="navbar-mensaje" role="alert">
-                    <span>
-                        {ingles
-                        ? "Navigation could not be loaded."
-                        : "No se pudo cargar la navegación."}
-                    </span>
-                    <button type="button" onClick={recargar}>
-                        {ingles ? "Retry" : "Reintentar"}
-                    </button>
-                </div>
-            )}
-                    
-        </header>
-    )
+      <section
+        id="navbar-menu-movil"
+        className={`navbar-panel-movil ${abierto ? "is-abierto" : ""}`}
+        role="dialog"
+        aria-label={
+          nav?.aria.menu ??
+          (ingles ? "Main navigation" : "Navegación principal")
+        }
+        aria-hidden={!abierto}
+        aria-modal={abierto ? "true" : undefined}
+        inert={!abierto}
+      >
+        <div className="navbar-panel-header">
+          <a
+            className="navbar-panel-logo"
+            href="#inicio"
+            onClick={() => setAbierto(false)}
+            aria-label={nav?.logo.aria ?? "Inicio"}
+          >
+            <img src={logoNormal} className="logo-escritorio" alt="" />
+            <img src={logoInverso} className="logo-movil" alt="" />
+          </a>
+          <button
+            ref={botonCerrar}
+            className="navbar-cerrar"
+            type="button"
+            aria-label={cerrar}
+            onClick={() => setAbierto(false)}
+            tabIndex={abierto ? 0 : -1}
+          >
+            <img src={Cerrar} alt="" />
+          </button>
+        </div>
+
+        <nav
+          className="navbar-panel-navegacion"
+          aria-label={
+            nav?.aria.menu ??
+            (ingles ? "Main navigation" : "Navegación principal")
+          }
+        >
+          {enlaces.map(([clave, texto]) => (
+            <a
+              key={clave}
+              href={DESTINOS[clave]}
+              className={`navbar-panel-enlace ${activo === clave ? "activo" : ""}`}
+              aria-current={activo === clave ? "page" : undefined}
+              onClick={() => setAbierto(false)}
+            >
+              {clave === "inicio" ? (
+                <img src={Inicio} alt="" />
+              ) : (
+                <img src={Mundo} alt="" />
+              )}
+              <span className="navbar-panel-texto">{texto}</span>
+              {activo === clave ? (
+                <span className="navbar-estas-aqui">
+                  {ingles ? "YOU ARE HERE" : "ESTÁS AQUÍ"}
+                </span>
+              ) : (
+                <span className="navbar-flecha" aria-hidden="true">
+                  <img src={Flecha} alt="" />
+                </span>
+              )}
+            </a>
+          ))}
+        </nav>
+
+        <div className="navbar-panel-idioma">
+          <span>{ingles ? "Language" : "Idioma"}</span>
+          <div
+            className="navbar-idiomas"
+            role="group"
+            aria-label={ingles ? "Language" : "Idioma"}
+          >
+            <button
+              type="button"
+              className={idioma === "es" ? "seleccionado" : ""}
+              aria-pressed={idioma === "es"}
+              onClick={() => cambiarIdioma("es")}
+            >
+              ES
+            </button>
+            <button
+              type="button"
+              className={idioma === "en" ? "seleccionado" : ""}
+              aria-pressed={idioma === "en"}
+              onClick={() => cambiarIdioma("en")}
+            >
+              EN
+            </button>
+          </div>
+        </div>
+
+        <div className="navbar-panel-idioma">
+          <span>{textos?.menuMovil?.secciones?.accesibilidad}</span>
+          <button
+            type="button"
+            className="navbar-boton-icono"
+            aria-label={nav?.aria?.accesibilidad}
+            aria-haspopup="dialog"
+            onClick={() => {
+              setAbierto(false);
+              abrirAccesibilidad();
+            }}
+          >
+            <img src={Accesibilidad} alt="" />
+          </button>
+        </div>
+
+        <footer className="navbar-panel-footer">
+          <div className="navbar-panel-botones">
+            <button
+              className="navbar-boton navbar-ingresar"
+              type="button"
+              onClick={() => setAbierto(false)}
+            >
+              {nav?.botones?.ingresar ?? (ingles ? "Log in" : "Ingresar")}
+            </button>
+            <button
+              className="navbar-boton navbar-crear"
+              type="button"
+              onClick={() => setAbierto(false)}
+            >
+              {nav?.botones?.crearCuenta ??
+                (ingles ? "Create account" : "Crear cuenta")}
+            </button>
+          </div>
+        </footer>
+      </section>
+
+      {/* Estados de carga y error de la API */}
+      {cargando && (
+        <p className="navbar-mensaje" role="status">
+          {ingles ? "Loading..." : "Cargando..."}
+        </p>
+      )}
+
+      {error && (
+        <div className="navbar-mensaje" role="alert">
+          <span>
+            {ingles
+              ? "Navigation could not be loaded."
+              : "No se pudo cargar la navegación."}
+          </span>
+          <button type="button" onClick={recargar}>
+            {ingles ? "Retry" : "Reintentar"}
+          </button>
+        </div>
+      )}
+    </header>
+  );
 }

@@ -3,11 +3,12 @@ import "./Footer.css";
 import { interpolar } from "../utils/interpolar";
 
 const DESTINOS = {
-    inicio: "#inicio",
-    mundos: "#mundos",
-    ingresar: "#ingresar",     
-    crearCuenta: "#registro",  
-    terminos: "#terminos",     
+  inicio: "#inicio",
+  mundos: "#mundos",
+  ingresar: "#ingresar",
+  crearCuenta: "#registro",
+  terminos: "#terminos",
+  accesibilidad: "#accesibilidad"
 };
 
 export default function Footer({ textos }) {

@@ -7,6 +7,7 @@ import Mundos from "./components/Mundos.jsx";
 import Footer from "./components/Footer.jsx";
 import PreferenciasCookies from "./components/PreferenciasCookies.jsx";
 import MundoPagina from "./components/MundoPagina.jsx"
+import PanelAccesibilidad from "./components/PanelAccesibilidad.jsx";
 
 
 function leerSeccion() {
@@ -27,6 +28,13 @@ function borrarCookie(nombre) {
 }
 
 function App() {
+  const ACC_INICIAL = {
+    tamano: "normal",
+    altoContraste: false,
+    reducirMovimiento: false,
+    subrayarEnlaces: false,
+    fuenteLecturaFacil: false,
+  };
   // Ahora el idioma va a depender de la Cookie  
   const [consentimiento, setConsentimiento] = useState(() => leerCookie("consentimiento"));
   const [idioma, setIdioma] = useState(() => {
@@ -38,12 +46,8 @@ function App() {
   const [activo, setActivo] = useState(leerSeccion);  
   const [textoGrande, setTextoGrande] = useState(false);
   const datos = useTextos(idioma);  
-
-  console.log(JSON.stringify({
-  albumMundo: datos.textos?.paginas?.albumMundo,
-  estados: datos.textos?.estados,
-  errores: datos.textos?.errores,
-}, null, 2));
+  const [accAbierto, setAccAbierto] = useState(false);
+  const [acc, setAcc] = useState(ACC_INICIAL);
   
 
   const ingles = idioma === "en";
@@ -95,16 +99,26 @@ function App() {
     document.body.dataset.vista = idMundo ? "mundo" : "inicio";
   }, [idMundo]);
 
+  useEffect(() => {
+    const r = document.documentElement;
+    r.dataset.tamano = acc.tamano;
+    r.dataset.contraste = acc.altoContraste ? "alto" : "normal";
+    r.dataset.movimiento = acc.reducirMovimiento ? "reducido" : "normal";
+    r.dataset.enlaces = acc.subrayarEnlaces ? "subrayados" : "normal";
+    r.dataset.fuente = acc.fuenteLecturaFacil ? "facil" : "normal";
+  }, [acc]);
+
   return (
     <>
       <Navbar
         {...datos}
         idioma={idioma}
         cambiarIdioma={setIdioma}
-        activo={activo.split("/")[0]}     
+        activo={activo.split("/")[0]}
         texto={textoGrande}
-        alternarTexto={() => setTextoGrande((valor) => !valor)}        
-      />                   
+        alternarTexto={() => setTextoGrande((valor) => !valor)}
+        abrirAccesibilidad={() => setAccAbierto(true)}
+      />
       <main>
         {idMundo ? (
           <MundoPagina {...datos} idioma={idioma} id={idMundo} />
@@ -114,15 +128,22 @@ function App() {
             <Mundos {...datos} idioma={idioma} />
           </>
         )}
-      </main>    
-      <Footer 
-      {...datos}
-      idioma={idioma}
-      />        
+      </main>
+      <Footer {...datos} idioma={idioma} />
       <PreferenciasCookies
-      {...datos}
-      consentimiento={consentimiento} 
-      onDecidir={decidirCookies}
+        {...datos}
+        consentimiento={consentimiento}
+        onDecidir={decidirCookies}
+      />
+      <PanelAccesibilidad
+        textos={datos.textos}
+        abierto={accAbierto}
+        onCerrar={() => setAccAbierto(false)}
+        valores={acc}
+        onCambiar={(clave, valor) =>
+          setAcc((actual) => ({ ...actual, [clave]: valor }))
+        }
+        onRestablecer={() => setAcc(ACC_INICIAL)}
       />
     </>
   );
