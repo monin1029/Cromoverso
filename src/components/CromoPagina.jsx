@@ -85,10 +85,10 @@ export default function CromoPagina({ id, textos }) {
 
   if (estado.error?.codigo === "no_encontrado") {
     return (
-      <section className="cromo-estado" role="status">
+      <section className="cromo-estado no-encontrado" role="status">
         <h1>{d?.noEncontrado?.titulo}</h1>
         <p>{d?.noEncontrado?.texto}</p>
-        <a className="boton boton--acento" href="/#mundos">
+        <a className="boton boton-morado" href="/#mundos">
           {d?.noEncontrado?.botones?.volver}
         </a>
       </section>

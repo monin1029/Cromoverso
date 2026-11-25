@@ -118,6 +118,15 @@
   font-weight: 700;
 }
 
+.boton-morado {
+  background: var(--marca-primario);
+  color: var(--texto-inverso)
+}
+
+.no-encontrado {
+  border: 2px solid var(--borde-fuerte);
+}
+
 .cromo-ubicacion {
   margin: 0;
   color: var(--texto-secundario);
