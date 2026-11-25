@@ -8,6 +8,7 @@ import Footer from "./components/Footer.jsx";
 import PreferenciasCookies from "./components/PreferenciasCookies.jsx";
 import MundoPagina from "./components/MundoPagina.jsx"
 import PanelAccesibilidad from "./components/PanelAccesibilidad.jsx";
+import IngresarPagina from "./components/IngresarPagina.jsx"
 
 
 function leerSeccion() {
@@ -35,7 +36,7 @@ function App() {
     subrayarEnlaces: false,
     fuenteLecturaFacil: false,
   };
-  // Ahora el idioma va a depender de la Cookie  
+  
   const [consentimiento, setConsentimiento] = useState(() => leerCookie("consentimiento"));
   const [idioma, setIdioma] = useState(() => {
   const guardado = leerCookie("idioma");
@@ -48,6 +49,11 @@ function App() {
   const datos = useTextos(idioma);  
   const [accAbierto, setAccAbierto] = useState(false);
   const [acc, setAcc] = useState(ACC_INICIAL);
+  const [sesion, setSesion] = useState(null);
+
+  if (activo.startsWith("mundos/") || activo === "ingresar") window.scrollTo(0,0)
+
+  const esIngresar = activo === "ingresar";
   
 
   const ingles = idioma === "en";
@@ -110,17 +116,22 @@ function App() {
 
   return (
     <>
-      <Navbar
-        {...datos}
-        idioma={idioma}
-        cambiarIdioma={setIdioma}
-        activo={activo.split("/")[0]}
-        texto={textoGrande}
-        alternarTexto={() => setTextoGrande((valor) => !valor)}
-        abrirAccesibilidad={() => setAccAbierto(true)}
-      />
+      {!esIngresar && (
+        <Navbar
+          {...datos}
+          idioma={idioma}
+          cambiarIdioma={setIdioma}
+          activo={activo.split("/")[0]}
+          texto={textoGrande}
+          alternarTexto={() => setTextoGrande((valor) => !valor)}
+          abrirAccesibilidad={() => setAccAbierto(true)}
+        />
+      )}
+
       <main>
-        {idMundo ? (
+        {esIngresar ? (
+          <IngresarPagina {...datos} idioma={idioma} onSesion={setSesion} />
+        ) : idMundo ? (
           <MundoPagina {...datos} idioma={idioma} id={idMundo} />
         ) : (
           <>
@@ -129,7 +140,8 @@ function App() {
           </>
         )}
       </main>
-      <Footer {...datos} idioma={idioma} />
+      {!esIngresar && <Footer {...datos} idioma={idioma} />}
+
       <PreferenciasCookies
         {...datos}
         consentimiento={consentimiento}

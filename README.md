@@ -2,7 +2,7 @@
 
 Álbum digital de cromos con **seis mundos y 120 héroes originales**. Proyecto académico construido con React y Vite que consume la API de Cromoverso.
 
-🔗 **Sitio publicado:** [URL DEL SITIO EN VERCEL]
+🔗 **Sitio publicado:** [https://cromoverso-nine.vercel.app/]
 
 ![Vista previa de Cromoverso](./docs/captura-inicio.png)
 

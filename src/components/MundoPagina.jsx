@@ -1,24 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMundo, useCromosFiltrados } from "../hooks/useMundo";
 import { useMundos } from "../hooks/useMundos";
 import { interpolar } from "../utils/interpolar";
-import iconoComun from "../assests/mundos/circulo.svg";
-import iconoRara from "../assests/mundos/rombo.svg";
-import iconoEpica from "../assests/mundos/estrella.svg";
-import iconoLegendaria from "../assests/mundos/corona.svg";
+import { pad, IconoRareza, Silueta } from "./PiezasCromo.jsx";
+import ModalCromo from "../components/ModalCromo.jsx";
 import "./MundoPagina.css";
-
-const pad = (n) => String(n).padStart(3, "0");
 
 const RAREZAS = ["comun", "rara", "epica", "legendaria"];
 const TIPOS = ["heroe", "aliado", "villano"];
 const ORDENES = { numero: (a, b) => a.numero - b.numero };
-const ICONO_RAREZA = {
-  comun: iconoComun,
-  rara: iconoRara,
-  epica: iconoEpica,
-  legendaria: iconoLegendaria,
-}; 
 
 function leerFiltros() {
   const p = new URLSearchParams(window.location.search);
@@ -50,15 +40,28 @@ export default function MundoPagina({ id, textos }) {
 
   const [filtros, setFiltros] = useState(leerFiltros);
   const [orden, setOrden] = useState("numero");
+  const [cromoAbierto, setCromoAbierto] = useState(null);
+  const disparador = useRef(null);
   const filtrados = useCromosFiltrados(id, filtros.rareza, filtros.tipo);
 
   function aplicar(nuevos) {
     setFiltros(nuevos);
     guardarFiltros(nuevos);
   }
-  const alternar = (clave, valor) => aplicar({ ...filtros, [clave]: filtros[clave] === valor ? null : valor });
+  const alternar = (clave, valor) =>
+    aplicar({ ...filtros, [clave]: filtros[clave] === valor ? null : valor });
 
   const limpiar = () => aplicar({ rareza: null, tipo: null });
+
+  function abrirCromo(idCromo, boton) {
+    disparador.current = boton;
+    setCromoAbierto(idCromo);
+  }
+
+  function cerrarCromo() {
+    setCromoAbierto(null);
+    disparador.current?.focus();
+  }
 
   useEffect(() => {
     if (mundo)
@@ -104,8 +107,9 @@ export default function MundoPagina({ id, textos }) {
     );
   }
 
-  const numeroMundo = Math.floor((mundo.numeros.desde - 1) / mundo.totalCromos) + 1;
-  
+  const numeroMundo =
+    Math.floor((mundo.numeros.desde - 1) / mundo.totalCromos) + 1;
+
   const hayFiltros = Boolean(filtros.rareza || filtros.tipo);
   const base = hayFiltros ? filtrados.cromos : mundo.cromos;
   const lista = base ? [...base].sort(ORDENES[orden]) : [];
@@ -294,12 +298,25 @@ export default function MundoPagina({ id, textos }) {
                   cromo={c}
                   rareza={rarezas.find((r) => r.id === c.rareza)}
                   t={t}
+                  onAbrir={abrirCromo}
                 />
               ))}
             </ul>
           )}
         </div>
       </div>
+
+      {cromoAbierto && (
+        <ModalCromo
+          mundo={mundo}
+          lista={lista}
+          rarezas={rarezas}
+          idCromo={cromoAbierto}
+          textos={textos}
+          onIr={setCromoAbierto}
+          onCerrar={cerrarCromo}
+        />
+      )}
     </>
   );
 }
@@ -332,13 +349,15 @@ function PanelMundos({ mundos, activo, t }) {
   );
 }
 
-function CartaCromo({ cromo, rareza, t }) {
+function CartaCromo({ cromo, rareza, t, onAbrir }) {
   const tipo = t?.filtros?.tipo?.opciones?.[cromo.tipo];
   return (
     <li>
-      <a
+      <button
+        type="button"
         className={`carta${cromo.holografico ? " carta-holo" : ""}`}
-        href={`#cromos/${cromo.id}`}
+        aria-haspopup="dialog"
+        onClick={(ev) => onAbrir(cromo.id, ev.currentTarget)}
         style={{ "--base": cromo.ilustracion.colorBase }}
       >
         <span className="carta-numero">{pad(cromo.numero)}</span>
@@ -346,46 +365,21 @@ function CartaCromo({ cromo, rareza, t }) {
           <IconoRareza id={rareza?.id} />
           <span className="solo-lectores">{rareza?.nombre}</span>
         </span>
-        <div className="carta-arte">
+        <span className="carta-arte">
           <Silueta />
-        </div>
+        </span>
         <strong>{cromo.nombre}</strong>
         <small>
           {interpolar(t?.tarjeta?.tipo, { mundo: cromo.mundoNombre, tipo })}
         </small>
-      </a>
+      </button>
     </li>
   );
 }
 
-function Silueta() {
-  return (
-    <svg viewBox="0 0 100 120" aria-hidden="true">
-      <circle cx="50" cy="58" r="38" fill="#fff" opacity=".18" />
-      <circle cx="50" cy="52" r="15" fill="#1A1033" />
-      <rect x="36" y="49" width="28" height="7" rx="3.5" fill="#FFD23F" />
-      <path d="M20 112c0-22 13-38 30-38s30 16 30 38z" fill="#1A1033" />
-      <path
-        d="M50 88l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"
-        fill="#FFD23F"
-      />
-    </svg>
-  );
-}
-
-function IconoRareza({ id }) {
-  return (
-    <span
-      className={`icono-rareza icono-rareza--${id}`}
-      style={{ "--icono": `url("${ICONO_RAREZA[id]}")` }}
-      aria-hidden="true"
-    />
-  );
-}
-
 function cuenta(t, n) {
-    return interpolar(
-      n === 1 ? t?.filtros?.cantidad?.uno : t?.filtros?.cantidad?.otro,
-      { cantidad: n },
-    );
+  return interpolar(
+    n === 1 ? t?.filtros?.cantidad?.uno : t?.filtros?.cantidad?.otro,
+    { cantidad: n },
+  );
 }

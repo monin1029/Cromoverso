@@ -133,8 +133,8 @@ export default function Navbar({
             </button>
           </div>
 
-          <a className="navbar-boton navbar-ingresar" href="#ingresar">
-            {nav?.botones?.ingresar}
+          <a className="navbar-boton navbar-ingresar" href="#ingresar" onClick={() => setAbierto(true)}>
+            {nav?.botones?.ingresar ?? (ingles ? "Log in": "Ingresar")}
           </a>
 
           <a className="navbar-boton navbar-crear" href="#registro">

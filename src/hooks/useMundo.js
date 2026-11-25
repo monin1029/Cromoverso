@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-const BASE = "https://yanethm-cromoverso-api.fly.dev/api/v1";
+import { BASE } from "../api/cromoverso";
 
 async function pedir(ruta, signal) {
   const res = await fetch(`${BASE}${ruta}`, { signal });

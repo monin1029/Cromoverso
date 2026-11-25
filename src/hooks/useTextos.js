@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
+import { BASE } from "../api/cromoverso";
 
-const API = "https://yanethm-cromoverso-api.fly.dev/api/v1/textos";
+const API = `${BASE}/textos`;
 const CLAVES_MENU = ["inicio", "mundos"];
-
-
 
 function validarTextos(datos) {
   const textos = datos?.textos;
@@ -44,8 +43,6 @@ function validarTextos(datos) {
 
   return textos;
 }
-
-
 
 export function useTextos(idioma) {
   const [textos, setTextos] = useState(null);

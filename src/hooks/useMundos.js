@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { BASE } from "../api/cromoverso";
 
-const URL_MUNDOS = "https://yanethm-cromoverso-api.fly.dev/api/v1/mundos";
+const URL_MUNDOS = `${BASE}/mundos`;
 
 export function useMundos() {
   const [estado, setEstado] = useState({
