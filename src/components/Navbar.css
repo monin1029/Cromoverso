@@ -127,6 +127,18 @@
 
 .navbar-usuario {
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar-sesion-error {
+    margin: 0;
+    padding: 8px 20px;
+    color: var(--estado-error);
+    background: var(--estado-error-suave);
+    font-size: 12px;
+    text-align: center;
 }
 
 .navbar-avatar {

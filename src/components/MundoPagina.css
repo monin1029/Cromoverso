@@ -319,6 +319,10 @@
         display: none;
     }
 
+    body[data-vista="cromo"] .navbar {
+        display: none;
+    }
+
     .mundo-cabecera {
         display: grid;
         grid-template-columns: auto 1fr;

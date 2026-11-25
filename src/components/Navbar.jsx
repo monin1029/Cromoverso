@@ -25,6 +25,7 @@ export default function Navbar({
   activo,
   sesion,
   cerrarSesion,
+  errorSesion,
   abrirAccesibilidad,
 }) {
   const [abierto, setAbierto] = useState(false);
@@ -36,6 +37,8 @@ export default function Navbar({
   const menuEstabaAbierto = useRef(false);
   const nav = textos?.navbar;
   const ingles = idioma === "en";
+  const desdeDetalle = window.location.pathname.startsWith("/cromos/");
+  const destino = (hash) => `${desdeDetalle ? "/" : ""}${hash}`;
   const usuario = sesion?.usuario;
   const correoUsuario = usuario?.correo ?? usuario?.email ?? "";
   const identificadorUsuario =
@@ -138,7 +141,7 @@ export default function Navbar({
       >
         <a
           className="navbar-logo"
-          href="#inicio"
+          href={destino("#inicio")}
           aria-label={nav?.logo.aria ?? "Inicio"}
           onClick={() => setAbierto(false)}
         >
@@ -150,7 +153,7 @@ export default function Navbar({
           {enlaces.map(([clave, texto]) => (
             <a
               key={clave}
-              href={DESTINOS[clave]}
+              href={destino(DESTINOS[clave])}
               aria-current={activo === clave ? "page" : undefined}
               onClick={() => setAbierto(false)}
             >
@@ -242,11 +245,11 @@ export default function Navbar({
             </div>
           ) : (
             <>
-              <a className="navbar-boton navbar-ingresar" href="#ingresar" onClick={() => setAbierto(true)}>
+              <a className="navbar-boton navbar-ingresar" href={destino("#ingresar")} onClick={() => setAbierto(true)}>
                 {nav?.botones?.ingresar ?? (ingles ? "Log in": "Ingresar")}
               </a>
 
-              <a className="navbar-boton navbar-crear" href="#registro">
+              <a className="navbar-boton navbar-crear" href={destino("#registro")}>
                 {nav?.botones?.crearCuenta}
               </a>
             </>
@@ -267,6 +270,12 @@ export default function Navbar({
         </button>
       </nav>
 
+      {errorSesion && (
+        <p className="navbar-sesion-error" role="alert">
+          {errorSesion}
+        </p>
+      )}
+
       <section
         id="navbar-menu-movil"
         className={`navbar-panel-movil ${abierto ? "is-abierto" : ""}`}
@@ -282,7 +291,7 @@ export default function Navbar({
         <div className="navbar-panel-header">
           <a
             className="navbar-panel-logo"
-            href="#inicio"
+            href={destino("#inicio")}
             onClick={() => setAbierto(false)}
             aria-label={nav?.logo.aria ?? "Inicio"}
           >
@@ -311,7 +320,7 @@ export default function Navbar({
           {enlaces.map(([clave, texto]) => (
             <a
               key={clave}
-              href={DESTINOS[clave]}
+              href={destino(DESTINOS[clave])}
               className={`navbar-panel-enlace ${activo === clave ? "activo" : ""}`}
               aria-current={activo === clave ? "page" : undefined}
               onClick={() => setAbierto(false)}
@@ -409,14 +418,14 @@ export default function Navbar({
             <div className="navbar-panel-botones">
               <a
                 className="navbar-boton navbar-ingresar"
-                href="#ingresar"
+                href={destino("#ingresar")}
                 onClick={() => setAbierto(false)}
               >
                 {nav?.botones?.ingresar ?? (ingles ? "Log in" : "Ingresar")}
               </a>
               <a
                 className="navbar-boton navbar-crear"
-                href="#registro"
+                href={destino("#registro")}
                 onClick={() => setAbierto(false)}
               >
                 {nav?.botones?.crearCuenta ??

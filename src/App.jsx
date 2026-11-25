@@ -9,10 +9,27 @@ import PreferenciasCookies from "./components/PreferenciasCookies.jsx";
 import MundoPagina from "./components/MundoPagina.jsx"
 import PanelAccesibilidad from "./components/PanelAccesibilidad.jsx";
 import IngresarPagina from "./components/IngresarPagina.jsx"
+import CromoPagina from "./components/CromoPagina.jsx";
+import {
+  cerrarSesion as solicitarCierreSesion,
+  obtenerSesion,
+} from "./api/cromoverso.js";
 
 
 function leerSeccion() {
+  if (window.location.pathname.startsWith("/cromos/")) {
+    return window.location.pathname;
+  }
   return window.location.hash.slice(1) || "inicio";
+}
+
+function leerIdCromo(ruta) {
+  const id = ruta.slice("/cromos/".length);
+  try {
+    return decodeURIComponent(id);
+  } catch {
+    return id;
+  }
 }
 
 function leerCookie(nombre) {
@@ -50,11 +67,12 @@ function App() {
   const [accAbierto, setAccAbierto] = useState(false);
   const [acc, setAcc] = useState(ACC_INICIAL);
   const [sesion, setSesion] = useState(null);
-
-  if (activo.startsWith("mundos/") || activo === "ingresar") window.scrollTo(0,0)
+  const [errorSesion, setErrorSesion] = useState(null);
 
   const esIngresar = activo === "ingresar";
-  
+  const idCromo = activo.startsWith("/cromos/")
+    ? leerIdCromo(activo)
+    : null;
 
   const ingles = idioma === "en";
   const titulo =
@@ -69,11 +87,41 @@ function App() {
       setActivo(leerSeccion());    
     }
     window.addEventListener("hashchange", actualizar);
-    return () => window.removeEventListener("hashchange", actualizar);
+    window.addEventListener("popstate", actualizar);
+    return () => {
+      window.removeEventListener("hashchange", actualizar);
+      window.removeEventListener("popstate", actualizar);
+    };
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang;
+    const controlador = new AbortController();
+    obtenerSesion({ signal: controlador.signal })
+      .then(({ usuario }) => setSesion({ usuario }))
+      .catch((error) => {
+        if (error?.name === "AbortError" || error?.codigo === "no_autenticado") {
+          setSesion(null);
+          return;
+        }
+        console.error("No se pudo consultar la sesión:", error);
+      });
+    return () => controlador.abort();
+  }, []);
+
+  useEffect(() => {
+    function llevarAIngreso() {
+      setSesion(null);
+      setErrorSesion("no_autenticado");
+      window.history.pushState(null, "", "/#ingresar");
+      setActivo("ingresar");
+    }
+    window.addEventListener("cromoverso:sesion-vencida", llevarAIngreso);
+    return () =>
+      window.removeEventListener("cromoverso:sesion-vencida", llevarAIngreso);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = idioma;
   }, [idioma]);  
 
   useEffect(() => {
@@ -94,7 +142,13 @@ function App() {
   }
 
   useEffect(() => {
-    if (activo.startsWith("mundos/")) window.scrollTo(0, 0);
+    if (
+      activo.startsWith("mundos/") ||
+      activo.startsWith("/cromos/") ||
+      activo === "ingresar"
+    ) {
+      window.scrollTo(0, 0);
+    }
     else document.getElementById(activo)?.scrollIntoView();
   }, [activo]);
   
@@ -102,8 +156,42 @@ function App() {
   const idMundo = activo.startsWith("mundos/") ? activo.split("/")[1] : null;
 
   useEffect(() => {
-    document.body.dataset.vista = idMundo ? "mundo" : "inicio";
-  }, [idMundo]);
+    document.body.dataset.vista = idCromo ? "cromo" : idMundo ? "mundo" : "inicio";
+  }, [idCromo, idMundo]);
+
+  useEffect(() => {
+    if (idCromo || idMundo || !datos.textos?.paginas?.inicio?.seo) return;
+    document.title = datos.textos.paginas.inicio.seo.titulo;
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "description";
+      document.head.append(meta);
+    }
+    meta.content = datos.textos.paginas.inicio.seo.descripcion;
+  }, [datos.textos, idCromo, idMundo]);
+
+  function volverAlInicio() {
+    window.history.pushState(null, "", "/#inicio");
+    setActivo("inicio");
+  }
+
+  async function cerrarSesion() {
+    setErrorSesion(null);
+    try {
+      await solicitarCierreSesion();
+      setSesion(null);
+      volverAlInicio();
+    } catch (error) {
+      setErrorSesion(error?.codigo ?? "error_interno");
+    }
+  }
+
+  function iniciarSesion(usuario) {
+    setSesion({ usuario });
+    setErrorSesion(null);
+    volverAlInicio();
+  }
 
   useEffect(() => {
     const r = document.documentElement;
@@ -123,7 +211,15 @@ function App() {
           cambiarIdioma={setIdioma}
           activo={activo.split("/")[0]}
           sesion={sesion}
-          cerrarSesion={() => setSesion(null)}
+          cerrarSesion={cerrarSesion}
+          errorSesion={
+            errorSesion === "conexion"
+              ? datos.textos?.estados?.sinConexion?.texto
+              : errorSesion
+                ? datos.textos?.errores?.[errorSesion] ??
+                  datos.textos?.errores?.generico
+                : null
+          }
           texto={textoGrande}
           alternarTexto={() => setTextoGrande((valor) => !valor)}
           abrirAccesibilidad={() => setAccAbierto(true)}
@@ -132,7 +228,9 @@ function App() {
 
       <main>
         {esIngresar ? (
-          <IngresarPagina {...datos} idioma={idioma} onSesion={setSesion} />
+          <IngresarPagina {...datos} idioma={idioma} onSesion={iniciarSesion} />
+        ) : idCromo ? (
+          <CromoPagina id={idCromo} textos={datos.textos} />
         ) : idMundo ? (
           <MundoPagina {...datos} idioma={idioma} id={idMundo} />
         ) : (

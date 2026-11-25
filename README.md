@@ -22,6 +22,9 @@
 
 - **Inicio público:** barra de navegación, sección principal (hero) y presentación de los seis mundos.
 - **Catálogo de un mundo:** página con las 20 cartas del mundo, panel lateral de mundos y filtros por rareza y tipo guardados en la URL.
+- **Detalle de un cromo:** ruta `/cromos/:id` con rareza, ilustración SVG, poder, descripción y atributos.
+- **Sesión:** ingreso, consulta al recargar y cierre mediante la cookie httpOnly de la API.
+- **Estados de interfaz:** carga, lista vacía, errores recuperables y página para cromos que no existen.
 - **Español e inglés:** todos los textos de la interfaz salen de la API y cambian con el selector ES / EN.
 - **Aviso de cookies:** guarda la decisión de la persona en una cookie del navegador.
 - **Panel de accesibilidad:** tamaño del texto, alto contraste, reducción de movimiento, subrayado de enlaces y fuente para lectura fácil.
@@ -66,11 +69,11 @@ Otros comandos:
 ```
 src/
 ├── assests/            # Iconos y fondos SVG
-├── components/         # Navbar, Hero, Mundos, MundoPagina, Footer, Cookies, PanelAccesibilidad
+├── components/         # Navbar, Hero, Mundos, MundoPagina, CromoPagina, Footer, formularios
 ├── hooks/              # useTextos, useMundos, useMundo (consumo de la API)
 ├── styles/             # tokens.css (variables de diseño) y global.css
 ├── utils/              # interpolar (marcadores de los textos) y funciones de cookies
-├── App.jsx             # Estado global: idioma, cookies, accesibilidad y navegación
+├── App.jsx             # Estado global: idioma, cookies, accesibilidad, sesión y navegación
 └── main.jsx            # Punto de entrada
 ```
 
@@ -87,6 +90,10 @@ La API devuelve JSON y, por ser un proyecto académico, usa **datos simulados** 
 | `GET /mundos/:id` | Un mundo con sus 20 cromos |
 | `GET /rarezas` | Las cuatro rarezas, con su icono y su nombre |
 | `GET /cromos` | Cromos filtrados por mundo, rareza o tipo |
+| `GET /cromos/:id` | Detalle de un cromo |
+| `GET /sesion` | Consultar la sesión iniciada |
+| `POST /sesion` | Iniciar sesión y recibir la cookie httpOnly |
+| `DELETE /sesion` | Cerrar sesión y borrar la cookie |
 
 Manejo de estados: carga, error con botón de reintentar, mundo no encontrado (`404`) y lista vacía (`200` con `datos: []`).
 
@@ -97,6 +104,7 @@ Documentación de la API: `https://yanethm-cromoverso-api.fly.dev/docs`
 - **Ningún texto va escrito en los componentes:** todo se pide a la API según el idioma.
 - **La rareza nunca se muestra solo con color:** siempre lleva icono y palabra.
 - **Las cartas se dibujan con CSS y SVG:** la API no entrega imágenes; cada carta usa el color y la figura que indica `ilustracion`.
+- **El token de sesión no se guarda en `localStorage`:** la API conserva la sesión en su cookie httpOnly.
 - **Los filtros viven en la URL** (`?rareza=…&tipo=…`) para que no se pierdan al recargar.
 - **Cookies:** `consentimiento` guarda la decisión de la persona; `idioma` solo se guarda si aceptó las cookies.
 - **Accesibilidad:** el panel aplica sus opciones mediante atributos `data-*` en `<html>`, que lee el CSS global.
@@ -108,6 +116,8 @@ El proyecto se publica en Vercel conectando el repositorio de GitHub:
 1. **Framework Preset:** Vite
 2. **Build Command:** `npm run build`
 3. **Output Directory:** `dist`
+
+La regla de `vercel.json` sirve la entrada de la SPA para que `/cromos/:id` funcione al abrir o recargar su URL directamente.
 
 Cada `git push` a la rama `main` genera un nuevo despliegue.
 

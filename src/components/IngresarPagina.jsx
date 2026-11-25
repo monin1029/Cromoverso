@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { iniciarSesion } from "../api/cromoverso.js";
 import cromosHero from "../assests/bg/cromos-hero.svg";
 import logo from "../assests/iconos/logo-normal.svg";
@@ -23,6 +23,7 @@ const MENSAJES = {
     recordar: "Mantener la sesión iniciada",
     recuperar: "¿Olvidaste tu contraseña?",
     ingresar: "Ingresar",
+    reintentar: "Reintentar",
     enviando: "Ingresando...",
     sinCuenta: "¿No tienes cuenta?",
     crearCuenta: "Crea una cuenta",
@@ -49,6 +50,7 @@ const MENSAJES = {
     recordar: "Keep me signed in",
     recuperar: "Forgot your password?",
     ingresar: "Sign in",
+    reintentar: "Try again",
     enviando: "Signing in...",
     sinCuenta: "Don't have an account?",
     crearCuenta: "Create an account",
@@ -102,6 +104,9 @@ export default function IngresarPagina({ textos, idioma = "es", onSesion }) {
   const [errores, setErrores] = useState({});
   const [mensajeGeneral, setMensajeGeneral] = useState("");
   const [espera, setEspera] = useState(0);
+  const [codigoError, setCodigoError] = useState(null);
+  const campoCorreo = useRef(null);
+  const campoClave = useRef(null);
 
   useEffect(() => {
     if (espera <= 0) return undefined;
@@ -113,28 +118,35 @@ export default function IngresarPagina({ textos, idioma = "es", onSesion }) {
     evento.preventDefault();
     const erroresLocales = validar(correo, clave, mensajes);
     setErrores(erroresLocales);
+    setCodigoError(null);
     setMensajeGeneral(
       Object.keys(erroresLocales).length > 0
         ? mensajes.alertaTitulo
         : "",
     );
 
-    if (Object.keys(erroresLocales).length > 0) return;
+    if (Object.keys(erroresLocales).length > 0) {
+      (erroresLocales.correo ? campoCorreo : campoClave).current?.focus();
+      return;
+    }
 
     setEnviando(true);
     try {
-      const { usuario, token } = await iniciarSesion(correo.trim(), clave);
-      onSesion?.({ usuario, token, recordar });
-      window.location.hash = "#inicio";
+      const { usuario } = await iniciarSesion(correo.trim(), clave);
+      onSesion?.(usuario);
     } catch (falla) {
       const erroresServidor =
         falla?.codigo === "validacion" && falla.campos
           ? falla.campos
           : {};
       setErrores(erroresServidor);
+      setCodigoError(falla?.codigo ?? "error_interno");
+      if (erroresServidor.correo || erroresServidor.clave) {
+        (erroresServidor.correo ? campoCorreo : campoClave).current?.focus();
+      }
 
       if (falla?.codigo === "demasiadas_peticiones") {
-        const segundos = falla.reintentarEn ?? 30;
+        const segundos = falla.reintentarEn || 30;
         setEspera(segundos);
         setMensajeGeneral(mensajes.esperar(segundos));
       } else if (falla?.codigo === "validacion") {
@@ -183,7 +195,6 @@ export default function IngresarPagina({ textos, idioma = "es", onSesion }) {
                 {mensajeGeneral === mensajes.alertaTitulo && (
                   <small>{mensajes.alertaDetalle}</small>
                 )}
-                <p>Si no recuerda la contraseña se jodió JAJAJAJA</p>
               </span>
             </div>
           )}
@@ -192,6 +203,7 @@ export default function IngresarPagina({ textos, idioma = "es", onSesion }) {
             <div className="ingresar-campo">
               <label htmlFor="correo">{mensajes.correo}</label>
               <input
+                ref={campoCorreo}
                 id="correo"
                 name="correo"
                 type="email"
@@ -217,6 +229,7 @@ export default function IngresarPagina({ textos, idioma = "es", onSesion }) {
                 className={`ingresar-clave${errores.clave ? " is-invalid" : ""}`}
               >
                 <input
+                  ref={campoClave}
                   id="clave"
                   name="clave"
                   type={mostrarClave ? "text" : "password"}
@@ -268,6 +281,8 @@ export default function IngresarPagina({ textos, idioma = "es", onSesion }) {
                 ? mensajes.enviando
                 : espera > 0
                   ? mensajes.esperar(espera)
+                  : codigoError === "conexion"
+                    ? mensajes.reintentar
                   : mensajes.ingresar}
             </button>
           </form>

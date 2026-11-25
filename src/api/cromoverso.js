@@ -1,39 +1,50 @@
 export const BASE = import.meta.env.VITE_API_CROMOVERSO;
 
-export async function api(ruta, { signal } = {}) {
-  const res = await fetch(`${BASE}${ruta}`, { signal });
-  if (!res.ok) {
-    const cuerpo = await res.json().catch(() => null);
-    throw (
-      cuerpo?.error ?? {
-        codigo: "error_interno",
-        mensaje: `HTTP ${res.status}`,
-      }
-    );
+function notificarSesionVencida(error) {
+  if (error?.codigo === "no_autenticado") {
+    window.dispatchEvent(new Event("cromoverso:sesion-vencida"));
   }
-  return res.json();
 }
 
-export async function enviar(ruta, cuerpo) {
+export async function api(
+  ruta,
+  { signal, method = "GET", cuerpo, headers = {}, redirigirAlVencer = true } = {},
+) {
   let res;
   try {
     res = await fetch(`${BASE}${ruta}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(cuerpo),
+      method,
+      signal,
+      credentials: "include",
+      headers: cuerpo
+        ? { "Content-Type": "application/json", ...headers }
+        : headers,
+      body: cuerpo ? JSON.stringify(cuerpo) : undefined,
     });
-  } catch {
+  } catch (falla) {
+    if (falla?.name === "AbortError") throw falla;
     throw { codigo: "conexion" };
   }
-  const datos = await res.json().catch(() => null);
+
+  const respuesta = res.status === 204 ? null : await res.json().catch(() => null);
   if (!res.ok) {
-    throw {
-      ...(datos?.error ?? { codigo: "error_interno" }),
+    const error = {
+      ...(respuesta?.error ?? {
+        codigo: "error_interno",
+        mensaje: `HTTP ${res.status}`,
+      }),
       reintentarEn: Number(res.headers.get("Retry-After")) || null,
     };
+    if (redirigirAlVencer) notificarSesionVencida(error);
+    throw error;
   }
-  return datos;
+  return respuesta;
 }
 
 export const iniciarSesion = (correo, clave) =>
-  enviar("/sesion", { correo, clave });
+  api("/sesion", { method: "POST", cuerpo: { correo, clave } });
+
+export const obtenerSesion = (opciones = {}) =>
+  api("/sesion", { ...opciones, redirigirAlVencer: false });
+
+export const cerrarSesion = () => api("/sesion", { method: "DELETE" });

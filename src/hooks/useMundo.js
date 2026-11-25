@@ -50,6 +50,7 @@ export function useCromosFiltrados(id, rareza, tipo) {
     cargando: false,
     error: null,
   });
+  const [intento, setIntento] = useState(0);
 
   useEffect(() => {
     if (!rareza && !tipo) {
@@ -76,7 +77,7 @@ export function useCromosFiltrados(id, rareza, tipo) {
       });
 
     return () => ctrl.abort();
-  }, [id, rareza, tipo]);
+  }, [id, rareza, tipo, intento]);
 
-  return estado;
+  return { ...estado, recargar: () => setIntento((n) => n + 1) };
 }

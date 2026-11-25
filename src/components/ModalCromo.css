@@ -190,6 +190,14 @@
     color: var(--texto-secundario);
 }
 
+.modal-cromo-pagina {
+    width: fit-content;
+    color: var(--texto-marca);
+    font-size: 12px;
+    font-weight: 700;
+    text-underline-offset: 3px;
+}
+
 .modal-cromo-atributos {
     padding: var(--espacio-2);
     background: var(--fondo-sutil);

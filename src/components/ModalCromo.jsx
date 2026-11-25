@@ -18,6 +18,7 @@ export default function ModalCromo({
   rarezas,
   idCromo,
   textos,
+  idioma = "es",
   onIr,
   onCerrar,
 }) {    
@@ -102,7 +103,7 @@ export default function ModalCromo({
               <IconoRareza id={cromo.rareza} />
             </span>
             <span className="modal-cromo-arte">
-              <Silueta />
+              <Silueta figura={cromo.ilustracion.figura} />
             </span>
             <strong>{cromo.nombre}</strong>
             <small>
@@ -162,6 +163,13 @@ export default function ModalCromo({
           </div>
 
           <p className="modal-cromo-descripcion">{cromo.descripcion}</p>
+          <a
+            className="modal-cromo-pagina"
+            href={`/cromos/${encodeURIComponent(cromo.id)}`}
+          >
+            {d?.botones?.verPagina ??
+              (idioma === "en" ? "Open full card page" : "Ver página completa")}
+          </a>
 
           <section className="modal-cromo-atributos">
             <header>

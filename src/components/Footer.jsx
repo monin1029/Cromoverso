@@ -14,6 +14,7 @@ const DESTINOS = {
 export default function Footer({ textos }) {
     const f = textos?.footer;
     const columnas = Object.values(f?.columnas ?? {});
+    const desdeDetalle = window.location.pathname.startsWith("/cromos/");
 
     return (
         <footer className="pie">
@@ -29,7 +30,7 @@ export default function Footer({ textos }) {
                     <ul>
                     {Object.entries(columna.enlaces).map(([clave, texto]) => (
                         <li key={clave}>
-                        <a href={DESTINOS[clave] ?? "#"}>{texto}</a>
+                        <a href={`${desdeDetalle ? "/" : ""}${DESTINOS[clave] ?? "#"}`}>{texto}</a>
                         </li>
                     ))}
                     </ul>

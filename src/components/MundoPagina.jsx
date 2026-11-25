@@ -32,7 +32,7 @@ function guardarFiltros({ rareza, tipo }) {
   );
 }
 
-export default function MundoPagina({ id, textos }) {
+export default function MundoPagina({ id, textos, idioma = "es" }) {
   const t = textos?.paginas?.albumMundo;
   const e = textos?.estados;
   const { mundo, rarezas, cargando, error, recargar } = useMundo(id);
@@ -272,15 +272,31 @@ export default function MundoPagina({ id, textos }) {
           </p>
 
           {hayFiltros && filtrados.error ? (
-            <p role="alert">
-              {textos?.errores?.[filtrados.error.codigo] ??
-                textos?.errores?.generico}
-            </p>
+            <section className="mundo-estado" role="alert">
+              <h2>
+                {filtrados.error.codigo === "conexion"
+                  ? e?.sinConexion?.titulo
+                  : e?.error?.titulo}
+              </h2>
+              <p>
+                {filtrados.error.codigo === "conexion"
+                  ? e?.sinConexion?.texto
+                  : textos?.errores?.[filtrados.error.codigo] ??
+                    textos?.errores?.generico}
+              </p>
+              <button
+                className="boton boton--acento"
+                type="button"
+                onClick={filtrados.recargar}
+              >
+                {e?.error?.botones?.reintentar}
+              </button>
+            </section>
           ) : hayFiltros && filtrados.cargando ? (
-            <p role="status">{e?.cargando}</p>
+            <p role="status" aria-busy="true">{e?.cargando}</p>
           ) : lista.length === 0 ? (
             <div className="vacio" role="status">
-              <h2>{t?.vacio?.titulo}</h2>
+              <h2>{e?.vacio?.titulo ?? t?.vacio?.titulo}</h2>
               <p>{t?.vacio?.texto}</p>
               <button
                 type="button"
@@ -313,6 +329,7 @@ export default function MundoPagina({ id, textos }) {
           rarezas={rarezas}
           idCromo={cromoAbierto}
           textos={textos}
+          idioma={idioma}
           onIr={setCromoAbierto}
           onCerrar={cerrarCromo}
         />
@@ -366,7 +383,7 @@ function CartaCromo({ cromo, rareza, t, onAbrir }) {
           <span className="solo-lectores">{rareza?.nombre}</span>
         </span>
         <span className="carta-arte">
-          <Silueta />
+          <Silueta figura={cromo.ilustracion.figura} />
         </span>
         <strong>{cromo.nombre}</strong>
         <small>
