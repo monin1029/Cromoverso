@@ -122,6 +122,8 @@ function App() {
           idioma={idioma}
           cambiarIdioma={setIdioma}
           activo={activo.split("/")[0]}
+          sesion={sesion}
+          cerrarSesion={() => setSesion(null)}
           texto={textoGrande}
           alternarTexto={() => setTextoGrande((valor) => !valor)}
           abrirAccesibilidad={() => setAccAbierto(true)}
@@ -137,16 +139,16 @@ function App() {
           <>
             <Hero {...datos} idioma={idioma} />
             <Mundos {...datos} idioma={idioma} />
+            <PreferenciasCookies
+              {...datos}
+              consentimiento={consentimiento}
+              onDecidir={decidirCookies}
+            />
           </>
         )}
       </main>
       {!esIngresar && <Footer {...datos} idioma={idioma} />}
 
-      <PreferenciasCookies
-        {...datos}
-        consentimiento={consentimiento}
-        onDecidir={decidirCookies}
-      />
       <PanelAccesibilidad
         textos={datos.textos}
         abierto={accAbierto}

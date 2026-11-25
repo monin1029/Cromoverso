@@ -125,6 +125,110 @@
     background: var(--marca-primario-hover);
 }
 
+.navbar-usuario {
+    position: relative;
+}
+
+.navbar-avatar {
+    display: inline-grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    padding: 0;
+    border: 1.5px solid var(--borde-fuerte);
+    border-radius: 50%;
+    color: var(--texto-principal);
+    background: var(--marca-acento);
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.navbar-avatar:focus-visible,
+.navbar-cerrar-sesion:focus-visible {
+    outline: 3px solid var(--marca-primario);
+    outline-offset: 3px;
+}
+
+.navbar-menu-usuario {
+    position: absolute;
+    z-index: 310;
+    top: calc(100% + 8px);
+    right: 0;
+    width: min(250px, calc(100vw - 24px));
+    overflow: hidden;
+    border: 2px solid var(--borde-fuerte);
+    border-radius: var(--radio-m);
+    background: var(--fondo-superficie);
+    box-shadow: var(--sombra-pop-pequena);
+}
+
+.navbar-usuario-detalle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+}
+
+.navbar-avatar--detalle {
+    flex: 0 0 36px;
+    color: var(--texto-inverso);
+    background: var(--marca-primario);
+}
+
+.navbar-usuario-texto {
+    display: grid;
+    min-width: 0;
+    gap: 3px;
+}
+
+.navbar-usuario-texto strong,
+.navbar-usuario-texto small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.navbar-usuario-texto strong {
+    font-size: 12px;
+}
+
+.navbar-usuario-texto small {
+    color: var(--texto-secundario);
+    font-size: 10px;
+}
+
+.navbar-cerrar-sesion {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 0;
+    border-top: 1px solid var(--borde-sutil);
+    color: var(--texto-principal);
+    background: var(--fondo-superficie);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+.navbar-cerrar-sesion:hover {
+    background: var(--fondo-sutil);
+}
+
+.navbar-cerrar-sesion svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
 .navbar-menu {
     display: none;
 }
@@ -230,17 +334,17 @@ a{
 
     .navbar-panel-header {
         display: flex;
-        min-height: 78px;
+        min-height: 60px;
         align-items: center;
         justify-content: space-between;
-        padding: 0 24px;
-        border-bottom: 3px solid var(--borde-fuerte);
+        padding: 0 12px;
+        border-bottom: 2px solid var(--borde-fuerte);
         background: var(--fondo-superficie);
     }
 
     .navbar-panel-logo img {
         display: block;
-        width: 178px;
+        width: 122px;
         height: auto;
     }
 
@@ -254,12 +358,12 @@ a{
 
     .navbar-cerrar {
         display: inline-flex;
-        width: 38px;
-        height: 38px;
+        width: 34px;
+        height: 34px;
         align-items: center;
         justify-content: center;
         padding: 8px;
-        border: 2px solid var(--borde-fuerte);
+        border: 1.5px solid var(--borde-fuerte);
         border-radius: 50%;
         color: var(--texto-principal);
         background: transparent;
@@ -277,20 +381,26 @@ a{
         flex: 1;
         flex-direction: column;
         align-items: stretch;
-        gap: 14px;
-        padding: 32px 24px;
+        gap: 6px;
+        padding: 15px 12px 12px;
     }
 
     .navbar-panel-enlace {
         display: flex;
-        min-height: 64px;
+        min-height: 40px;
         align-items: center;
-        gap: 14px;
-        padding: 0 18px;
+        gap: 10px;
+        padding: 0 12px;
         border: 2px solid transparent;
-        border-radius: var(--radio-xl);
+        border-radius: var(--radio-m);
         color: var(--texto-principal);
         text-decoration: none;
+    }
+
+    .navbar-panel-enlace > img {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
     }
 
     .navbar-panel-enlace.activo {        
@@ -299,17 +409,17 @@ a{
     }    
     
     .navbar-panel-texto {
-        font-size: 16px;
+        font-size: 12px;
         font-weight: 700;
     }
 
     .navbar-estas-aqui {
-        padding: 6px 9px;
+        padding: 4px 7px;
         margin-left: auto;
         border-radius: var(--radio-pildora);
         color: var(--texto-inverso);
         background: var(--texto-principal);
-        font-size: 9px;
+        font-size: 8px;
         font-weight: 800;
         letter-spacing: 0.04em;
         white-space: nowrap;
@@ -317,8 +427,8 @@ a{
 
     .navbar-flecha {
         display: inline-flex;
-        width: 24px;
-        height: 24px;
+        width: 18px;
+        height: 18px;
         align-items: center;
         justify-content: center;
         margin-left: auto;
@@ -328,19 +438,111 @@ a{
         display: flex;
         flex-direction: column;
         gap: 22px;
-        padding: 22px 24px ;  
+        padding: 12px;
         border-top: 2px solid var(--borde-fuerte);     
         background: var(--fondo-superficie);   
     }
 
+    .navbar-panel-footer--sesion {
+        padding: 14px 11px 20px 12px;
+    }
+
+    .navbar-panel-cuenta,
+    .navbar-panel-perfil {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+    }
+
+    .navbar-panel-cuenta {
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .navbar-panel-perfil {
+        flex: 1;
+        gap: 10px;
+    }
+
+    .navbar-avatar--panel {
+        width: 30px;
+        height: 30px;
+        flex: 0 0 30px;
+        font-size: 9px;
+    }
+
+    .navbar-panel-usuario {
+        display: grid;
+        min-width: 0;
+        gap: 2px;
+    }
+
+    .navbar-panel-usuario strong,
+    .navbar-panel-usuario small {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .navbar-panel-usuario strong {
+        font-size: 11px;
+    }
+
+    .navbar-panel-usuario small {
+        color: var(--texto-secundario);
+        font-size: 9px;
+    }
+
+    .navbar-panel-cerrar-sesion {
+        display: inline-flex;
+        min-height: 30px;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: 5px 11px;
+        border: 1.5px solid var(--borde-fuerte);
+        border-radius: var(--radio-pildora);
+        box-shadow: 1px 1px 0 var(--borde-fuerte);
+        color: var(--texto-principal);
+        background: var(--fondo-superficie);
+        font: 700 10px/1.2 var(--fuente-rubik);
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .navbar-panel-cerrar-sesion svg {
+        width: 13px;
+        height: 13px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.7;
+    }
+
+    .navbar-panel-cerrar-sesion:hover {
+        background: var(--fondo-sutil);
+    }
+
+    .navbar-panel-cerrar-sesion:focus-visible {
+        outline: 3px solid var(--marca-primario);
+        outline-offset: 2px;
+    }
+
     .navbar-panel-idioma {
         display: flex;
-        min-height: 38px;
+        min-height: 36px;
         align-items: center;
-        justify-content: space-around;
-        font-size: 14px;
+        justify-content: space-between;
+        padding: 0 12px;
+        margin: 0 0 8px;
+        font-size: 12px;
         font-weight: 600;  
-        margin-bottom: 20px;                      
+    }
+
+    .navbar-panel-navegacion + .navbar-panel-idioma {
+        margin-bottom: 12px;
     }
 
     .navbar-panel-idioma .navbar-idiomas {
@@ -351,10 +553,16 @@ a{
     }
 
     .navbar-panel-idioma .navbar-idiomas button {
-        min-width: 38px;
-        min-height: 30px;
+        min-width: 32px;
+        min-height: 24px;
+        padding: 3px 7px;
         border-radius: var(--radio-pildora);
-        font-size: 11px;        
+        font-size: 10px;
+    }
+
+    .navbar-panel-idioma > .navbar-boton-icono {
+        width: 32px;
+        height: 32px;
     }
 
     .navbar-panel-botones {        

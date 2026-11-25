@@ -23,18 +23,55 @@ export default function Navbar({
   idioma,
   cambiarIdioma,
   activo,
+  sesion,
+  cerrarSesion,
   abrirAccesibilidad,
 }) {
   const [abierto, setAbierto] = useState(false);
+  const [menuUsuarioAbierto, setMenuUsuarioAbierto] = useState(false);
   const botonMenu = useRef(null);
   const botonCerrar = useRef(null);
+  const botonUsuario = useRef(null);
+  const menuUsuario = useRef(null);
   const menuEstabaAbierto = useRef(false);
   const nav = textos?.navbar;
   const ingles = idioma === "en";
+  const usuario = sesion?.usuario;
+  const correoUsuario = usuario?.correo ?? usuario?.email ?? "";
+  const identificadorUsuario =
+    usuario?.usuario ??
+    usuario?.username ??
+    usuario?.handle ??
+    usuario?.alias ??
+    "";
+  const etiquetaUsuario = identificadorUsuario
+    ? identificadorUsuario.startsWith("@")
+      ? identificadorUsuario
+      : `@${identificadorUsuario}`
+    : correoUsuario;
+  const nombreCompuesto = [
+    usuario?.nombre,
+    usuario?.apellido ?? usuario?.apellidos,
+  ]
+    .filter(Boolean)
+    .join(" ");
   const abrir =
     textos?.menuMovil?.abrir ?? (ingles ? "Open menu" : "Abrir menú");
   const cerrar =
     textos?.menuMovil?.cerrar ?? (ingles ? "Close menu" : "Cerrar menú");
+  const nombreUsuario =
+    (usuario?.nombreCompleto ??
+      usuario?.name ??
+      usuario?.displayName ??
+      nombreCompuesto) ||
+    correoUsuario;
+  const iniciales = (nombreUsuario || correoUsuario || "?")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((parte) => parte[0])
+    .join("")
+    .toLocaleUpperCase();
   const enlaces = Object.entries(
     nav?.enlaces ?? {
       inicio: ingles ? "Home" : "Inicio",
@@ -53,6 +90,10 @@ export default function Navbar({
 
   useEffect(() => {
     function cerrarConEscape(evento) {
+      if (evento.key === "Escape" && menuUsuarioAbierto) {
+        setMenuUsuarioAbierto(false);
+        botonUsuario.current?.focus();
+      }
       if (evento.key === "Escape" && abierto) {
         setAbierto(false);
         botonMenu.current?.focus();
@@ -61,7 +102,23 @@ export default function Navbar({
 
     document.addEventListener("keydown", cerrarConEscape);
     return () => document.removeEventListener("keydown", cerrarConEscape);
-  }, [abierto]);
+  }, [abierto, menuUsuarioAbierto]);
+
+  useEffect(() => {
+    function cerrarAlHacerClicFuera(evento) {
+      if (!menuUsuario.current?.contains(evento.target)) {
+        setMenuUsuarioAbierto(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", cerrarAlHacerClicFuera);
+    return () =>
+      document.removeEventListener("pointerdown", cerrarAlHacerClicFuera);
+  }, []);
+
+  useEffect(() => {
+    setMenuUsuarioAbierto(false);
+  }, [sesion]);
 
   useEffect(() => {
     if (!abierto) return undefined;
@@ -133,13 +190,67 @@ export default function Navbar({
             </button>
           </div>
 
-          <a className="navbar-boton navbar-ingresar" href="#ingresar" onClick={() => setAbierto(true)}>
-            {nav?.botones?.ingresar ?? (ingles ? "Log in": "Ingresar")}
-          </a>
+          {sesion ? (
+            <div className="navbar-usuario" ref={menuUsuario}>
+              <button
+                ref={botonUsuario}
+                type="button"
+                className="navbar-avatar"
+                aria-label={
+                  ingles
+                    ? `User menu: ${nombreUsuario}`
+                    : `Menú de usuario: ${nombreUsuario}`
+                }
+                aria-haspopup="menu"
+                aria-expanded={menuUsuarioAbierto}
+                aria-controls="navbar-menu-usuario"
+                onClick={() => setMenuUsuarioAbierto((valor) => !valor)}
+              >
+                {iniciales}
+              </button>
+              {menuUsuarioAbierto && (
+                <div
+                  id="navbar-menu-usuario"
+                  className="navbar-menu-usuario"
+                  role="menu"
+                >
+                  <div className="navbar-usuario-detalle">
+                    <span className="navbar-avatar navbar-avatar--detalle" aria-hidden="true">
+                      {iniciales}
+                    </span>
+                    <span className="navbar-usuario-texto">
+                      <strong>{nombreUsuario}</strong>
+                      {correoUsuario && <small>{correoUsuario}</small>}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="navbar-cerrar-sesion"
+                    onClick={() => {
+                      setMenuUsuarioAbierto(false);
+                      cerrarSesion?.();
+                    }}
+                  >
+                    <svg viewBox="0 0 20 20" aria-hidden="true">
+                      <path d="M8 3H4v14h4M11 6l4 4-4 4m4-4H7" />
+                    </svg>
+                    {ingles ? "Sign out" : "Cerrar sesión"}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <a className="navbar-boton navbar-ingresar" href="#ingresar" onClick={() => setAbierto(true)}>
+                {nav?.botones?.ingresar ?? (ingles ? "Log in": "Ingresar")}
+              </a>
 
-          <a className="navbar-boton navbar-crear" href="#registro">
-            {nav?.botones?.crearCuenta}
-          </a>
+              <a className="navbar-boton navbar-crear" href="#registro">
+                {nav?.botones?.crearCuenta}
+              </a>
+            </>
+          )}
         </div>
 
         {/* Botón del menú móvil */}
@@ -266,24 +377,53 @@ export default function Navbar({
           </button>
         </div>
 
-        <footer className="navbar-panel-footer">
-          <div className="navbar-panel-botones">
-            <button
-              className="navbar-boton navbar-ingresar"
-              type="button"
-              onClick={() => setAbierto(false)}
-            >
-              {nav?.botones?.ingresar ?? (ingles ? "Log in" : "Ingresar")}
-            </button>
-            <button
-              className="navbar-boton navbar-crear"
-              type="button"
-              onClick={() => setAbierto(false)}
-            >
-              {nav?.botones?.crearCuenta ??
-                (ingles ? "Create account" : "Crear cuenta")}
-            </button>
-          </div>
+        <footer
+          className={`navbar-panel-footer${sesion ? " navbar-panel-footer--sesion" : ""}`}
+        >
+          {sesion ? (
+            <div className="navbar-panel-cuenta">
+              <div className="navbar-panel-perfil">
+                <span className="navbar-avatar navbar-avatar--panel" aria-hidden="true">
+                  {iniciales}
+                </span>
+                <span className="navbar-panel-usuario">
+                  <strong>{nombreUsuario}</strong>
+                  {etiquetaUsuario && <small>{etiquetaUsuario}</small>}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="navbar-panel-cerrar-sesion"
+                onClick={() => {
+                  setAbierto(false);
+                  cerrarSesion?.();
+                }}
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M8 3H4v14h4M11 6l4 4-4 4m4-4H7" />
+                </svg>
+                {ingles ? "Sign out" : "Cerrar sesión"}
+              </button>
+            </div>
+          ) : (
+            <div className="navbar-panel-botones">
+              <a
+                className="navbar-boton navbar-ingresar"
+                href="#ingresar"
+                onClick={() => setAbierto(false)}
+              >
+                {nav?.botones?.ingresar ?? (ingles ? "Log in" : "Ingresar")}
+              </a>
+              <a
+                className="navbar-boton navbar-crear"
+                href="#registro"
+                onClick={() => setAbierto(false)}
+              >
+                {nav?.botones?.crearCuenta ??
+                  (ingles ? "Create account" : "Crear cuenta")}
+              </a>
+            </div>
+          )}
         </footer>
       </section>
 

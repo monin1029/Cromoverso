@@ -183,6 +183,7 @@ export default function IngresarPagina({ textos, idioma = "es", onSesion }) {
                 {mensajeGeneral === mensajes.alertaTitulo && (
                   <small>{mensajes.alertaDetalle}</small>
                 )}
+                <p>Si no recuerda la contraseña se jodió JAJAJAJA</p>
               </span>
             </div>
           )}

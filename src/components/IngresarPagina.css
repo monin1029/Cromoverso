@@ -322,30 +322,150 @@
 @media (max-width: 760px) {
   .ingresar {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
   .ingresar-visual {
+    display: flex;
+    height: clamp(270px, 33svh, 360px);
+    min-height: 270px;
+    padding: 8px 8px 12px;
+    background-position: center;
+  }
+
+  .ingresar-visual .ingresar-logo img {
+    width: 160px;
+  }
+
+  .ingresar-cromos {
+    width: min(52vw, 260px);
+    margin: 0;
+  }
+
+  .ingresar-promocion {
+    max-width: none;
+  }
+
+  .ingresar-etiqueta {
+    margin-bottom: 5px;
+    padding: 2px 7px;
+    font-size: 11px;
+  }
+
+  .ingresar-promocion h2 {
+    font-size: clamp(20px, 5vw, 23px);
+    line-height: 1.08;
+  }
+
+  .ingresar-promocion p {
     display: none;
   }
 
   .ingresar-formulario {
-    min-height: 100vh;
-    padding: 32px 24px;
+    min-height: 0;
+    align-items: start;
+    padding: 20px 10px 24px;
   }
 
   .ingresar-contenido {
-    max-width: 440px;
+    width: 100%;
+    max-width: none;
+  }
+
+  .ingresar-contenido > .ingresar-logo {
+    display: none;
+  }
+
+  .ingresar-contenido h1 {
+    font-size: clamp(20px, 5vw, 22px);
+    line-height: 1.2;
+  }
+
+  .ingresar-subtitulo {
+    margin: 6px 0 25px;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+
+  .ingresar-alerta {
+    gap: 7px;
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 11px;
+  }
+
+  .ingresar-campo {
+    margin-bottom: 9px;
+  }
+
+  .ingresar-campo > label {
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+
+  .ingresar-campo > input,
+  .ingresar-clave {
+    min-height: 31px;
+    border-width: 1.5px;
+    border-radius: 8px;
+  }
+
+  .ingresar-campo > input,
+  .ingresar-clave input {
+    font-size: 11px;
+  }
+
+  .ingresar-campo > input {
+    padding: 6px 9px;
+  }
+
+  .ingresar-clave input {
+    min-height: 28px;
+    padding: 5px 9px;
+  }
+
+  .ingresar-ver-clave {
+    flex-basis: 32px;
+  }
+
+  .ingresar-opciones {
+    gap: 8px;
+    margin: 8px 0 36px;
+    font-size: 9px;
+  }
+
+  .ingresar-recordar {
+    gap: 5px;
+  }
+
+  .ingresar-recordar input {
+    width: 12px;
+    height: 12px;
+  }
+
+  .ingresar-boton {
+    min-height: 40px;
+    padding: 6px 14px;
+    border-width: 1.5px;
+    font-size: 12px;
+  }
+
+  .ingresar-registro {
+    margin-top: 12px;
+    font-size: 9px;
   }
 }
 
 @media (max-width: 380px) {
   .ingresar-formulario {
-    padding-right: 18px;
-    padding-left: 18px;
+    padding-right: 12px;
+    padding-left: 12px;
   }
 
   .ingresar-opciones {
-    align-items: flex-start;
-    font-size: 11px;
+    gap: 5px;
+    font-size: 8px;
   }
 }
